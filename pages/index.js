@@ -144,15 +144,16 @@ export default function Home() {
 
   const inputStyle = {
     width: '100%',
-    padding: '12px 15px',
+    padding: '12px 16px',
     marginTop: '8px',
-    border: '2px solid rgba(0, 112, 243, 0.2)',
+    border: '2px solid #e2e8f0',
     borderRadius: '10px',
     fontSize: '14px',
-    background: 'linear-gradient(145deg, #ffffff, #f5f7fa)',
-    boxShadow: 'inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px rgba(255,255,255,0.8)',
+    background: '#ffffff',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
     transition: 'all 0.3s ease',
-    outline: 'none'
+    outline: 'none',
+    color: '#1a202c'
   };
 
   const labelStyle = {
@@ -160,60 +161,50 @@ export default function Home() {
     flexDirection: 'column',
     fontSize: '13px',
     fontWeight: '600',
-    color: '#1a2332',
+    color: '#2d3748',
     letterSpacing: '0.3px'
   };
 
   return (
     <main style={{ 
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)',
+      background: 'linear-gradient(to bottom, #f7fafc 0%, #edf2f7 100%)',
       padding: '40px 20px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
       <div style={{ maxWidth: 1400, margin: 'auto' }}>
-        {/* Header with 3D effect */}
+        {/* Header */}
         <h1 style={{ 
           textAlign: 'center', 
-          fontSize: '48px',
+          fontSize: '42px',
           fontWeight: '800',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
+          color: '#1a202c',
           marginBottom: '40px',
-          textShadow: '4px 4px 8px rgba(0,0,0,0.2)',
           letterSpacing: '-1px'
         }}>
           Retirement Planner
         </h1>
 
-        {/* Input Section with Glassmorphism */}
+        {/* Input Section */}
         <section style={{ 
-          background: 'rgba(255, 255, 255, 0.95)',
-          backdropFilter: 'blur(20px)',
+          background: '#ffffff',
           padding: '35px',
-          borderRadius: '24px',
-          marginBottom: '35px',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.5)',
-          border: '1px solid rgba(255,255,255,0.3)',
-          transform: 'translateZ(0)'
+          borderRadius: '16px',
+          marginBottom: '30px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
+          border: '1px solid #e2e8f0'
         }}>
           <h2 style={{ 
             marginTop: 0, 
             marginBottom: 25, 
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: '700',
-            color: '#1a2332',
+            color: '#2d3748',
             display: 'flex',
             alignItems: 'center',
             gap: '10px'
           }}>
-            <span style={{ 
-              fontSize: '28px',
-              background: 'linear-gradient(135deg, #667eea, #764ba2)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>💼</span> Your Inputs
+            <span style={{ fontSize: '24px' }}>💼</span> Your Inputs
           </h2>
 
           {/* First Row */}
@@ -228,21 +219,27 @@ export default function Home() {
                 min={18} 
                 max={100} 
                 onChange={handleChange}
-                onFocus={(e) => e.target.style.borderColor = '#667eea'}
-                onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#4299e1';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e2e8f0';
+                  e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)';
+                }}
               />
             </label>
             <label style={labelStyle}>
               Retirement Age
-              <input style={inputStyle} type="number" name="retirementAge" value={inputs.retirementAge} min={18} max={100} onChange={handleChange} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="retirementAge" value={inputs.retirementAge} min={18} max={100} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
             <label style={labelStyle}>
               Expenses Planned Until Age
-              <input style={inputStyle} type="number" name="expensesUntilAge" value={inputs.expensesUntilAge} min={inputs.retirementAge + 1} max={120} onChange={handleChange} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="expensesUntilAge" value={inputs.expensesUntilAge} min={inputs.retirementAge + 1} max={120} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
             <label style={labelStyle}>
               Current Savings (₹)
-              <input style={inputStyle} type="number" name="currentSavings" value={inputs.currentSavings} min={0} step={100000} onChange={handleChange} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="currentSavings" value={inputs.currentSavings} min={0} step={100000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
           </div>
 
@@ -250,80 +247,77 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 25 }}>
             <label style={labelStyle}>
               Monthly Investment (₹)
-              <input style={inputStyle} type="number" name="monthlyInvestment" value={inputs.monthlyInvestment} min={0} step={1000} onChange={handleChange} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="monthlyInvestment" value={inputs.monthlyInvestment} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
             <label style={labelStyle}>
               Step-up Every Year (%)
-              <input style={inputStyle} type="number" name="stepUpRate" value={inputs.stepUpRate * 100} min={0} max={50} step={0.1} onChange={e => setInputs(prev => ({ ...prev, stepUpRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="stepUpRate" value={inputs.stepUpRate * 100} min={0} max={50} step={0.1} onChange={e => setInputs(prev => ({ ...prev, stepUpRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
             <label style={labelStyle}>
               Post-Retirement Monthly Expense (₹)
-              <input style={inputStyle} type="number" name="postRetirementMonthlyExpense" value={inputs.postRetirementMonthlyExpense} min={0} step={1000} onChange={handleChange} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="postRetirementMonthlyExpense" value={inputs.postRetirementMonthlyExpense} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
             <label style={labelStyle}>
               Inflation Rate (%)
-              <input style={inputStyle} type="number" name="inflationRate" value={inputs.inflationRate * 100} min={0} max={20} step={0.1} onChange={e => setInputs(prev => ({ ...prev, inflationRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => e.target.style.borderColor = '#667eea'} onBlur={(e) => e.target.style.borderColor = 'rgba(0, 112, 243, 0.2)'} />
+              <input style={inputStyle} type="number" name="inflationRate" value={inputs.inflationRate * 100} min={0} max={20} step={0.1} onChange={e => setInputs(prev => ({ ...prev, inflationRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
             </label>
           </div>
 
-          {/* Calculate Button with 3D effect */}
+          {/* Calculate Button */}
           <button 
             onClick={recalculate}
             style={{ 
               width: '100%',
-              padding: '18px 20px', 
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '16px 20px', 
+              background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)',
               color: 'white', 
               border: 'none', 
-              borderRadius: '14px',
+              borderRadius: '12px',
               cursor: 'pointer', 
-              fontSize: 18, 
+              fontSize: 16, 
               fontWeight: '700',
-              boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4), inset 0 -2px 0 rgba(0,0,0,0.2)',
+              boxShadow: '0 4px 14px rgba(66, 153, 225, 0.4)',
               transition: 'all 0.3s ease',
               letterSpacing: '0.5px',
               textTransform: 'uppercase'
             }}
             onMouseOver={e => {
               e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.5), inset 0 -2px 0 rgba(0,0,0,0.2)';
+              e.target.style.boxShadow = '0 6px 20px rgba(66, 153, 225, 0.5)';
             }}
             onMouseOut={e => {
               e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 10px 30px rgba(102, 126, 234, 0.4), inset 0 -2px 0 rgba(0,0,0,0.2)';
+              e.target.style.boxShadow = '0 4px 14px rgba(66, 153, 225, 0.4)';
             }}
           >
             Calculate Retirement Plan
           </button>
         </section>
 
-        {/* Status Banner with premium styling */}
+        {/* Status Banner */}
         <section style={{ 
           background: results.fundsLastUntilPlannedAge 
-            ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' 
-            : 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)',
-          border: 'none',
-          borderRadius: '20px',
-          padding: '25px 30px',
-          marginBottom: '35px',
+            ? 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)' 
+            : 'linear-gradient(135deg, #f56565 0%, #e53e3e 100%)',
+          borderRadius: '16px',
+          padding: '24px 30px',
+          marginBottom: '30px',
           textAlign: 'center',
           boxShadow: results.fundsLastUntilPlannedAge
-            ? '0 15px 40px rgba(17, 153, 142, 0.3)'
-            : '0 15px 40px rgba(235, 51, 73, 0.3)',
-          color: 'white',
-          transform: 'translateZ(0)'
+            ? '0 4px 14px rgba(72, 187, 120, 0.3)'
+            : '0 4px 14px rgba(245, 101, 101, 0.3)',
+          color: 'white'
         }}>
           <div style={{ 
-            fontSize: 22, 
+            fontSize: 20, 
             fontWeight: '800', 
-            marginBottom: 12,
-            textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
-            letterSpacing: '0.5px'
+            marginBottom: 10,
+            letterSpacing: '0.3px'
           }}>
             {results.fundsLastUntilPlannedAge ? '✓ Your Retirement Plan is Secure!' : '⚠ Warning: Insufficient Funds'}
           </div>
           <div style={{ 
-            fontSize: 16,
+            fontSize: 15,
             fontWeight: '500',
             opacity: 0.95
           }}>
@@ -339,50 +333,47 @@ export default function Home() {
           <button 
             onClick={() => setShowTable(!showTable)} 
             style={{ 
-              padding: '14px 35px',
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
-              color: '#1a2332', 
-              border: '2px solid rgba(102, 126, 234, 0.3)', 
-              borderRadius: '12px',
+              padding: '12px 32px',
+              background: '#ffffff',
+              color: '#2d3748', 
+              border: '2px solid #e2e8f0', 
+              borderRadius: '10px',
               cursor: 'pointer',
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: '700',
-              boxShadow: '0 8px 20px rgba(0,0,0,0.1)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
               transition: 'all 0.3s ease'
             }}
             onMouseOver={e => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 12px 30px rgba(0,0,0,0.15)';
+              e.target.style.borderColor = '#cbd5e0';
+              e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
             }}
             onMouseOut={e => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+              e.target.style.borderColor = '#e2e8f0';
+              e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
             }}
           >
             {showTable ? '👁️ Hide' : '👁️ Show'} Detailed Year-by-Year Table
           </button>
         </div>
 
-        {/* Table with 3D styling */}
+        {/* Table */}
         {showTable && (
-          <section style={{ marginBottom: 45 }}>
+          <section style={{ marginBottom: 40 }}>
             <h2 style={{ 
               marginBottom: 20, 
-              color: 'white',
-              fontSize: 26,
-              fontWeight: '700',
-              textShadow: '2px 2px 8px rgba(0,0,0,0.3)'
+              color: '#1a202c',
+              fontSize: 24,
+              fontWeight: '700'
             }}>📊 Detailed Year-by-Year Breakdown</h2>
             <div style={{ 
               maxHeight: '600px', 
               overflowY: 'auto', 
               overflowX: 'auto',
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
-              border: '1px solid rgba(255,255,255,0.3)'
+              background: '#ffffff',
+              borderRadius: '16px',
+              boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
+              border: '1px solid #e2e8f0'
             }}>
               <table style={{ 
                 width: '100%', 
@@ -393,42 +384,41 @@ export default function Home() {
                 <thead style={{ 
                   position: 'sticky', 
                   top: 0, 
-                  zIndex: 10,
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                  zIndex: 10
                 }}>
-                  <tr style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
-                    <th style={{ padding: '15px 10px', textAlign: 'left', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Age</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Starting Saving</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Planned Expenses</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Additional Expenses</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Additional Savings</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Ending Savings</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'center', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Status</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'center', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Warning</th>
-                    <th style={{ padding: '15px 10px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>Monthly</th>
+                  <tr style={{ background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)', color: 'white' }}>
+                    <th style={{ padding: '14px 12px', textAlign: 'left', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Age</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Starting Saving</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Planned Expenses</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Additional Expenses</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Additional Savings</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Ending Savings</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'center', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Status</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'center', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Warning</th>
+                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Monthly</th>
                   </tr>
                 </thead>
                 <tbody>
                   {results.yearlyData.map((row, idx) => {
                     const isRetired = row.status === 'Retired';
                     const isDead = row.status === 'Dead';
-                    const bgColor = idx % 2 === 0 ? 'rgba(255,255,255,0.8)' : 'rgba(245,247,250,0.8)';
-                    const highlightColor = (idx % 5 === 0 && idx > 0) ? 'rgba(255,250,205,0.9)' : bgColor;
+                    const bgColor = idx % 2 === 0 ? '#ffffff' : '#f7fafc';
+                    const highlightColor = (idx % 5 === 0 && idx > 0) ? '#fffbeb' : bgColor;
 
                     return (
-                      <tr key={idx} style={{ backgroundColor: highlightColor, transition: 'all 0.2s ease' }}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = 'rgba(102, 126, 234, 0.1)'}
+                      <tr key={idx} style={{ backgroundColor: highlightColor, transition: 'background-color 0.2s ease' }}
+                        onMouseOver={e => e.currentTarget.style.backgroundColor = '#edf2f7'}
                         onMouseOut={e => e.currentTarget.style.backgroundColor = highlightColor}
                       >
-                        <td style={{ padding: '12px 10px', borderBottom: '1px solid rgba(0,0,0,0.05)', fontWeight: 'bold', color: '#1a2332' }}>{row.age}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'right', borderBottom: '1px solid rgba(0,0,0,0.05)', color: '#4a5568' }}>{formatINR(row.startingSavings)}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'right', borderBottom: '1px solid rgba(0,0,0,0.05)', color: '#4a5568' }}>{formatINR(row.plannedExpenses)}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'right', borderBottom: '1px solid rgba(0,0,0,0.05)', color: '#4a5568' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'right', borderBottom: '1px solid rgba(0,0,0,0.05)', color: '#4a5568' }}>{formatINR(row.additionalSavings)}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'right', borderBottom: '1px solid rgba(0,0,0,0.05)', fontWeight: 'bold', color: isRetired ? '#e53e3e' : '#667eea' }}>{formatINR(row.endingSavings)}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'center', borderBottom: '1px solid rgba(0,0,0,0.05)', fontWeight: 'bold', color: isDead ? '#e53e3e' : isRetired ? '#ed8936' : '#38a169' }}>{row.status}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'center', borderBottom: '1px solid rgba(0,0,0,0.05)', color: '#e53e3e', fontWeight: 'bold' }}>{row.warning}</td>
-                        <td style={{ padding: '12px 10px', textAlign: 'right', borderBottom: '1px solid rgba(0,0,0,0.05)', color: '#4a5568' }}>{formatINR(row.monthly)}</td>
+                        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0', fontWeight: '600', color: '#1a202c' }}>{row.age}</td>
+                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.startingSavings)}</td>
+                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.plannedExpenses)}</td>
+                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
+                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.additionalSavings)}</td>
+                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', fontWeight: '700', color: isRetired ? '#e53e3e' : '#3182ce' }}>{formatINR(row.endingSavings)}</td>
+                        <td style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', fontWeight: '700', color: isDead ? '#e53e3e' : isRetired ? '#dd6b20' : '#38a169' }}>{row.status}</td>
+                        <td style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: '#e53e3e', fontWeight: '700' }}>{row.warning}</td>
+                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.monthly)}</td>
                       </tr>
                     );
                   })}
@@ -438,48 +428,46 @@ export default function Home() {
           </section>
         )}
 
-        {/* Charts with premium styling */}
-        <section style={{ marginTop: 45 }}>
+        {/* Charts */}
+        <section style={{ marginTop: 40 }}>
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
+            background: '#ffffff',
             padding: '30px',
-            borderRadius: '24px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-            marginBottom: 35,
-            border: '1px solid rgba(255,255,255,0.3)'
+            borderRadius: '16px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
+            marginBottom: 30,
+            border: '1px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 20, fontWeight: '700', color: '#1a2332' }}>📈 Projected Savings Growth</h2>
+            <h2 style={{ fontSize: 20, marginTop: 0, marginBottom: 20, fontWeight: '700', color: '#1a202c' }}>📈 Projected Savings Growth</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                <XAxis dataKey="age" stroke="#4a5568" />
-                <YAxis stroke="#4a5568" />
-                <Tooltip formatter={value => formatINR(value)} contentStyle={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="age" stroke="#718096" />
+                <YAxis stroke="#718096" />
+                <Tooltip formatter={value => formatINR(value)} contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
                 <Legend />
-                <Line type="monotone" dataKey="savings" stroke="#667eea" strokeWidth={3} activeDot={{ r: 8 }} name="Savings" />
+                <Line type="monotone" dataKey="savings" stroke="#3182ce" strokeWidth={3} activeDot={{ r: 8 }} name="Savings" />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
           <div style={{ 
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
+            background: '#ffffff',
             padding: '30px',
-            borderRadius: '24px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-            border: '1px solid rgba(255,255,255,0.3)'
+            borderRadius: '16px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
+            border: '1px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 20, fontWeight: '700', color: '#1a2332' }}>📉 Post-Retirement Corpus</h2>
+            <h2 style={{ fontSize: 20, marginTop: 0, marginBottom: 20, fontWeight: '700', color: '#1a202c' }}>📉 Post-Retirement Corpus</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-                <XAxis dataKey="age" stroke="#4a5568" />
-                <YAxis stroke="#4a5568" />
-                <Tooltip formatter={value => formatINR(value)} contentStyle={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '8px' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="age" stroke="#718096" />
+                <YAxis stroke="#718096" />
+                <Tooltip formatter={value => formatINR(value)} contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
                 <Legend />
-                <Line type="monotone" dataKey="remainingCorpus" stroke="#eb3349" strokeWidth={3} activeDot={{ r: 8 }} name="Remaining Corpus" />
-                <Line type="monotone" dataKey="annualExpense" stroke="#ed8936" strokeWidth={3} name="Annual Expense" />
+                <Line type="monotone" dataKey="remainingCorpus" stroke="#e53e3e" strokeWidth={3} activeDot={{ r: 8 }} name="Remaining Corpus" />
+                <Line type="monotone" dataKey="annualExpense" stroke="#dd6b20" strokeWidth={3} name="Annual Expense" />
               </LineChart>
             </ResponsiveContainer>
           </div>
