@@ -183,8 +183,7 @@ export default function Home() {
     fontSize: '14px',
     fontWeight: '800',
     color: '#1a202c',
-    letterSpacing: '0.3px',
-    textTransform: 'uppercase'
+    letterSpacing: '0.3px'
   };
 
   return (
@@ -230,7 +229,6 @@ export default function Home() {
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            textTransform: 'uppercase',
             letterSpacing: '0.5px'
           }}>
             <span style={{ fontSize: '28px' }}>💼</span> Your Inputs
@@ -323,8 +321,7 @@ export default function Home() {
               fontWeight: '800',
               boxShadow: '0 6px 16px rgba(49, 130, 206, 0.4)',
               transition: 'all 0.3s ease',
-              letterSpacing: '1px',
-              textTransform: 'uppercase'
+              letterSpacing: '1px'
             }}
             onMouseOver={e => {
               e.target.style.transform = 'translateY(-2px)';
@@ -358,8 +355,7 @@ export default function Home() {
             fontSize: 22, 
             fontWeight: '900', 
             marginBottom: 12,
-            letterSpacing: '0.5px',
-            textTransform: 'uppercase'
+            letterSpacing: '0.5px'
           }}>
             {results.fundsLastUntilPlannedAge ? '✓ Your Retirement Plan is Secure!' : '⚠ Warning: Insufficient Funds'}
           </div>
@@ -390,7 +386,6 @@ export default function Home() {
               fontWeight: '800',
               boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
               transition: 'all 0.3s ease',
-              textTransform: 'uppercase',
               letterSpacing: '0.5px'
             }}
             onMouseOver={e => {
@@ -416,7 +411,6 @@ export default function Home() {
               color: '#1a202c',
               fontSize: 26,
               fontWeight: '900',
-              textTransform: 'uppercase',
               letterSpacing: '0.5px'
             }}>📊 Detailed Year-by-Year Breakdown</h2>
             <div style={{ 
@@ -440,15 +434,15 @@ export default function Home() {
                   zIndex: 10
                 }}>
                   <tr style={{ background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', color: 'white' }}>
-                    <th style={{ padding: '16px 14px', textAlign: 'left', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Age</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Starting Saving</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Planned Expenses</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Additional Expenses</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Additional Savings</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ending Savings</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Warning</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Monthly</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'left', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Age</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Starting Saving</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Planned Expenses</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Additional Expenses</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Additional Savings</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Ending Savings</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Status</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Warning</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Monthly</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -491,7 +485,7 @@ export default function Home() {
             marginBottom: 30,
             border: '2px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Projected Savings Growth</h2>
+            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📈 Projected Savings Growth</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -511,7 +505,7 @@ export default function Home() {
             boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
             border: '2px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📉 Post-Retirement Corpus</h2>
+            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📉 Post-Retirement Corpus</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
