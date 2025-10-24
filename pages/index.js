@@ -70,6 +70,7 @@ function calculateRetirement(inputs) {
   let corpus = savings;
   let annualExpense = postRetirementMonthlyExpense * 12;
   let expenseData = [];
+  let moneyRunsOutAge = null;
 
   for (let i = 1; i <= yearsAfterRetirement; i++) {
     const age = retirementAge + i;
@@ -85,6 +86,11 @@ function calculateRetirement(inputs) {
     }
 
     const status = corpus <= 0 ? 'Dead' : 'Retired';
+
+    // Track when money runs out
+    if (corpus <= 0 && moneyRunsOutAge === null) {
+      moneyRunsOutAge = age;
+    }
 
     yearlyData.push({
       age,
@@ -107,7 +113,17 @@ function calculateRetirement(inputs) {
     if (corpus <= 0) break;
   }
 
-  return { accumulation: chartData, exhaustion: expenseData, yearlyData };
+  // Determine if funds last until planned age
+  const fundsLastUntilPlannedAge = moneyRunsOutAge === null || moneyRunsOutAge >= expensesUntilAge;
+
+  return { 
+    accumulation: chartData, 
+    exhaustion: expenseData, 
+    yearlyData,
+    fundsLastUntilPlannedAge,
+    moneyRunsOutAge,
+    expensesUntilAge
+  };
 }
 
 function formatINR(value) {
@@ -216,6 +232,34 @@ export default function Home() {
         >
           Calculate
         </button>
+      </section>
+
+      {/* Status Banner */}
+      <section style={{ 
+        backgroundColor: results.fundsLastUntilPlannedAge ? '#d4edda' : '#f8d7da',
+        border: `2px solid ${results.fundsLastUntilPlannedAge ? '#28a745' : '#dc3545'}`,
+        borderRadius: 8,
+        padding: 20,
+        marginBottom: 30,
+        textAlign: 'center'
+      }}>
+        <div style={{ 
+          fontSize: 18, 
+          fontWeight: 'bold', 
+          color: results.fundsLastUntilPlannedAge ? '#155724' : '#721c24',
+          marginBottom: 10
+        }}>
+          {results.fundsLastUntilPlannedAge ? '✓ Your Retirement Plan is Secure!' : '⚠ Warning: Insufficient Funds'}
+        </div>
+        <div style={{ 
+          fontSize: 15, 
+          color: results.fundsLastUntilPlannedAge ? '#155724' : '#721c24'
+        }}>
+          {results.fundsLastUntilPlannedAge 
+            ? `Your savings will last until age ${results.expensesUntilAge} as planned. You're on track!`
+            : `Your funds will run out at age ${results.moneyRunsOutAge}. You need to increase savings or reduce expenses to reach age ${results.expensesUntilAge}.`
+          }
+        </div>
       </section>
 
       {/* Toggle Button for Table */}
