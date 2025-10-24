@@ -128,6 +128,26 @@ function formatINR(value) {
   }).format(value);
 }
 
+// Format currency for Y-axis in Lakhs and Crores
+function formatYAxis(value) {
+  if (value >= 10000000) {
+    return `${(value / 10000000).toFixed(1)}Cr`;
+  } else if (value >= 100000) {
+    return `${(value / 100000).toFixed(0)}L`;
+  }
+  return value.toString();
+}
+
+// Format tooltip values
+function formatTooltipValue(value) {
+  if (value >= 10000000) {
+    return `₹${(value / 10000000).toFixed(2)} Cr`;
+  } else if (value >= 100000) {
+    return `₹${(value / 100000).toFixed(2)} L`;
+  }
+  return `₹${formatINR(value)}`;
+}
+
 export default function Home() {
   const [inputs, setInputs] = useState(initialInputs);
   const [results, setResults] = useState(calculateRetirement(initialInputs));
@@ -144,13 +164,14 @@ export default function Home() {
 
   const inputStyle = {
     width: '100%',
-    padding: '12px 16px',
+    padding: '13px 16px',
     marginTop: '8px',
-    border: '2px solid #e2e8f0',
+    border: '2px solid #cbd5e0',
     borderRadius: '10px',
-    fontSize: '14px',
+    fontSize: '16px',
+    fontWeight: '700',
     background: '#ffffff',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.08)',
     transition: 'all 0.3s ease',
     outline: 'none',
     color: '#1a202c'
@@ -159,10 +180,11 @@ export default function Home() {
   const labelStyle = {
     display: 'flex',
     flexDirection: 'column',
-    fontSize: '13px',
-    fontWeight: '600',
-    color: '#2d3748',
-    letterSpacing: '0.3px'
+    fontSize: '14px',
+    fontWeight: '800',
+    color: '#1a202c',
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase'
   };
 
   return (
@@ -173,15 +195,20 @@ export default function Home() {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
       <div style={{ maxWidth: 1400, margin: 'auto' }}>
-        {/* Header */}
+        {/* Header with Clock Icon */}
         <h1 style={{ 
           textAlign: 'center', 
-          fontSize: '42px',
-          fontWeight: '800',
+          fontSize: '44px',
+          fontWeight: '900',
           color: '#1a202c',
           marginBottom: '40px',
-          letterSpacing: '-1px'
+          letterSpacing: '-1px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '15px'
         }}>
+          <span style={{ fontSize: '44px' }}>⏰</span>
           Retirement Planner
         </h1>
 
@@ -191,26 +218,30 @@ export default function Home() {
           padding: '35px',
           borderRadius: '16px',
           marginBottom: '30px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
-          border: '1px solid #e2e8f0'
+          boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
+          border: '2px solid #e2e8f0'
         }}>
           <h2 style={{ 
             marginTop: 0, 
-            marginBottom: 25, 
-            fontSize: 22,
-            fontWeight: '700',
-            color: '#2d3748',
+            marginBottom: 28, 
+            fontSize: 24,
+            fontWeight: '800',
+            color: '#1a202c',
             display: 'flex',
             alignItems: 'center',
-            gap: '10px'
+            gap: '12px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
           }}>
-            <span style={{ fontSize: '24px' }}>💼</span> Your Inputs
+            <span style={{ fontSize: '28px' }}>💼</span> Your Inputs
           </h2>
 
           {/* First Row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 20 }}>
             <label style={labelStyle}>
-              Current Age
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>👤</span> Current Age
+              </span>
               <input 
                 style={inputStyle} 
                 type="number" 
@@ -220,46 +251,60 @@ export default function Home() {
                 max={100} 
                 onChange={handleChange}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#4299e1';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)';
+                  e.target.style.borderColor = '#3182ce';
+                  e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#e2e8f0';
-                  e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)';
+                  e.target.style.borderColor = '#cbd5e0';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)';
                 }}
               />
             </label>
             <label style={labelStyle}>
-              Retirement Age
-              <input style={inputStyle} type="number" name="retirementAge" value={inputs.retirementAge} min={18} max={100} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>🏖️</span> Retirement Age
+              </span>
+              <input style={inputStyle} type="number" name="retirementAge" value={inputs.retirementAge} min={18} max={100} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
             <label style={labelStyle}>
-              Expenses Planned Until Age
-              <input style={inputStyle} type="number" name="expensesUntilAge" value={inputs.expensesUntilAge} min={inputs.retirementAge + 1} max={120} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>🎯</span> Expenses Planned Until Age
+              </span>
+              <input style={inputStyle} type="number" name="expensesUntilAge" value={inputs.expensesUntilAge} min={inputs.retirementAge + 1} max={120} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
             <label style={labelStyle}>
-              Current Savings (₹)
-              <input style={inputStyle} type="number" name="currentSavings" value={inputs.currentSavings} min={0} step={100000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>💰</span> Current Savings (₹)
+              </span>
+              <input style={inputStyle} type="number" name="currentSavings" value={inputs.currentSavings} min={0} step={100000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
           </div>
 
           {/* Second Row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 25 }}>
             <label style={labelStyle}>
-              Monthly Investment (₹)
-              <input style={inputStyle} type="number" name="monthlyInvestment" value={inputs.monthlyInvestment} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>💵</span> Monthly Investment (₹)
+              </span>
+              <input style={inputStyle} type="number" name="monthlyInvestment" value={inputs.monthlyInvestment} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
             <label style={labelStyle}>
-              Step-up Every Year (%)
-              <input style={inputStyle} type="number" name="stepUpRate" value={inputs.stepUpRate * 100} min={0} max={50} step={0.1} onChange={e => setInputs(prev => ({ ...prev, stepUpRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>📈</span> Step-up Every Year (%)
+              </span>
+              <input style={inputStyle} type="number" name="stepUpRate" value={inputs.stepUpRate * 100} min={0} max={50} step={0.1} onChange={e => setInputs(prev => ({ ...prev, stepUpRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
             <label style={labelStyle}>
-              Post-Retirement Monthly Expense (₹)
-              <input style={inputStyle} type="number" name="postRetirementMonthlyExpense" value={inputs.postRetirementMonthlyExpense} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>🏠</span> Post-Retirement Monthly Expense (₹)
+              </span>
+              <input style={inputStyle} type="number" name="postRetirementMonthlyExpense" value={inputs.postRetirementMonthlyExpense} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
             <label style={labelStyle}>
-              Inflation Rate (%)
-              <input style={inputStyle} type="number" name="inflationRate" value={inputs.inflationRate * 100} min={0} max={20} step={0.1} onChange={e => setInputs(prev => ({ ...prev, inflationRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#4299e1'; e.target.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.1)'; }} onBlur={(e) => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'; }} />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>📊</span> Inflation Rate (%)
+              </span>
+              <input style={inputStyle} type="number" name="inflationRate" value={inputs.inflationRate * 100} min={0} max={20} step={0.1} onChange={e => setInputs(prev => ({ ...prev, inflationRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
             </label>
           </div>
 
@@ -268,26 +313,26 @@ export default function Home() {
             onClick={recalculate}
             style={{ 
               width: '100%',
-              padding: '16px 20px', 
-              background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)',
+              padding: '18px 20px', 
+              background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)',
               color: 'white', 
               border: 'none', 
               borderRadius: '12px',
               cursor: 'pointer', 
-              fontSize: 16, 
-              fontWeight: '700',
-              boxShadow: '0 4px 14px rgba(66, 153, 225, 0.4)',
+              fontSize: 17, 
+              fontWeight: '800',
+              boxShadow: '0 6px 16px rgba(49, 130, 206, 0.4)',
               transition: 'all 0.3s ease',
-              letterSpacing: '0.5px',
+              letterSpacing: '1px',
               textTransform: 'uppercase'
             }}
             onMouseOver={e => {
               e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 20px rgba(66, 153, 225, 0.5)';
+              e.target.style.boxShadow = '0 8px 24px rgba(49, 130, 206, 0.5)';
             }}
             onMouseOut={e => {
               e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 14px rgba(66, 153, 225, 0.4)';
+              e.target.style.boxShadow = '0 6px 16px rgba(49, 130, 206, 0.4)';
             }}
           >
             Calculate Retirement Plan
@@ -297,29 +342,31 @@ export default function Home() {
         {/* Status Banner */}
         <section style={{ 
           background: results.fundsLastUntilPlannedAge 
-            ? 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)' 
-            : 'linear-gradient(135deg, #f56565 0%, #e53e3e 100%)',
+            ? 'linear-gradient(135deg, #38a169 0%, #2f855a 100%)' 
+            : 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)',
           borderRadius: '16px',
-          padding: '24px 30px',
+          padding: '26px 32px',
           marginBottom: '30px',
           textAlign: 'center',
           boxShadow: results.fundsLastUntilPlannedAge
-            ? '0 4px 14px rgba(72, 187, 120, 0.3)'
-            : '0 4px 14px rgba(245, 101, 101, 0.3)',
-          color: 'white'
+            ? '0 6px 16px rgba(56, 161, 105, 0.35)'
+            : '0 6px 16px rgba(229, 62, 62, 0.35)',
+          color: 'white',
+          border: '2px solid rgba(255,255,255,0.3)'
         }}>
           <div style={{ 
-            fontSize: 20, 
-            fontWeight: '800', 
-            marginBottom: 10,
-            letterSpacing: '0.3px'
+            fontSize: 22, 
+            fontWeight: '900', 
+            marginBottom: 12,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase'
           }}>
             {results.fundsLastUntilPlannedAge ? '✓ Your Retirement Plan is Secure!' : '⚠ Warning: Insufficient Funds'}
           </div>
           <div style={{ 
-            fontSize: 15,
-            fontWeight: '500',
-            opacity: 0.95
+            fontSize: 16,
+            fontWeight: '600',
+            lineHeight: '1.6'
           }}>
             {results.fundsLastUntilPlannedAge 
               ? `Your savings will last until age ${results.expensesUntilAge} as planned. You're on track!`
@@ -329,28 +376,32 @@ export default function Home() {
         </section>
 
         {/* Toggle Button */}
-        <div style={{ textAlign: 'center', marginBottom: 25 }}>
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
           <button 
             onClick={() => setShowTable(!showTable)} 
             style={{ 
-              padding: '12px 32px',
+              padding: '14px 36px',
               background: '#ffffff',
-              color: '#2d3748', 
-              border: '2px solid #e2e8f0', 
+              color: '#1a202c', 
+              border: '2px solid #cbd5e0', 
               borderRadius: '10px',
               cursor: 'pointer',
-              fontSize: 14,
-              fontWeight: '700',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              transition: 'all 0.3s ease'
+              fontSize: 15,
+              fontWeight: '800',
+              boxShadow: '0 3px 10px rgba(0,0,0,0.08)',
+              transition: 'all 0.3s ease',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}
             onMouseOver={e => {
-              e.target.style.borderColor = '#cbd5e0';
-              e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+              e.target.style.borderColor = '#a0aec0';
+              e.target.style.boxShadow = '0 6px 16px rgba(0,0,0,0.12)';
+              e.target.style.transform = 'translateY(-2px)';
             }}
             onMouseOut={e => {
-              e.target.style.borderColor = '#e2e8f0';
-              e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
+              e.target.style.borderColor = '#cbd5e0';
+              e.target.style.boxShadow = '0 3px 10px rgba(0,0,0,0.08)';
+              e.target.style.transform = 'translateY(0)';
             }}
           >
             {showTable ? '👁️ Hide' : '👁️ Show'} Detailed Year-by-Year Table
@@ -361,10 +412,12 @@ export default function Home() {
         {showTable && (
           <section style={{ marginBottom: 40 }}>
             <h2 style={{ 
-              marginBottom: 20, 
+              marginBottom: 22, 
               color: '#1a202c',
-              fontSize: 24,
-              fontWeight: '700'
+              fontSize: 26,
+              fontWeight: '900',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}>📊 Detailed Year-by-Year Breakdown</h2>
             <div style={{ 
               maxHeight: '600px', 
@@ -372,13 +425,13 @@ export default function Home() {
               overflowX: 'auto',
               background: '#ffffff',
               borderRadius: '16px',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
-              border: '1px solid #e2e8f0'
+              boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
+              border: '2px solid #e2e8f0'
             }}>
               <table style={{ 
                 width: '100%', 
                 borderCollapse: 'collapse', 
-                fontSize: 13, 
+                fontSize: 14, 
                 backgroundColor: 'transparent'
               }}>
                 <thead style={{ 
@@ -386,16 +439,16 @@ export default function Home() {
                   top: 0, 
                   zIndex: 10
                 }}>
-                  <tr style={{ background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)', color: 'white' }}>
-                    <th style={{ padding: '14px 12px', textAlign: 'left', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Age</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Starting Saving</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Planned Expenses</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Additional Expenses</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Additional Savings</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Ending Savings</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'center', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Status</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'center', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Warning</th>
-                    <th style={{ padding: '14px 12px', textAlign: 'right', fontWeight: '700', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #4299e1 0%, #3182ce 100%)' }}>Monthly</th>
+                  <tr style={{ background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', color: 'white' }}>
+                    <th style={{ padding: '16px 14px', textAlign: 'left', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Age</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Starting Saving</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Planned Expenses</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Additional Expenses</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Additional Savings</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ending Savings</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Warning</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Monthly</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -410,15 +463,15 @@ export default function Home() {
                         onMouseOver={e => e.currentTarget.style.backgroundColor = '#edf2f7'}
                         onMouseOut={e => e.currentTarget.style.backgroundColor = highlightColor}
                       >
-                        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0', fontWeight: '600', color: '#1a202c' }}>{row.age}</td>
-                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.startingSavings)}</td>
-                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.plannedExpenses)}</td>
-                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
-                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.additionalSavings)}</td>
-                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', fontWeight: '700', color: isRetired ? '#e53e3e' : '#3182ce' }}>{formatINR(row.endingSavings)}</td>
-                        <td style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', fontWeight: '700', color: isDead ? '#e53e3e' : isRetired ? '#dd6b20' : '#38a169' }}>{row.status}</td>
-                        <td style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: '#e53e3e', fontWeight: '700' }}>{row.warning}</td>
-                        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#4a5568' }}>{formatINR(row.monthly)}</td>
+                        <td style={{ padding: '13px 14px', borderBottom: '1px solid #e2e8f0', fontWeight: '800', color: '#1a202c', fontSize: '14px' }}>{row.age}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.startingSavings)}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.plannedExpenses)}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.additionalSavings)}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', fontWeight: '800', color: isRetired ? '#e53e3e' : '#3182ce', fontSize: '14px' }}>{formatINR(row.endingSavings)}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', fontWeight: '800', color: isDead ? '#e53e3e' : isRetired ? '#dd6b20' : '#38a169', fontSize: '14px' }}>{row.status}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: '#e53e3e', fontWeight: '800', fontSize: '14px' }}>{row.warning}</td>
+                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.monthly)}</td>
                       </tr>
                     );
                   })}
@@ -432,20 +485,20 @@ export default function Home() {
         <section style={{ marginTop: 40 }}>
           <div style={{ 
             background: '#ffffff',
-            padding: '30px',
+            padding: '32px',
             borderRadius: '16px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
             marginBottom: 30,
-            border: '1px solid #e2e8f0'
+            border: '2px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 20, marginTop: 0, marginBottom: 20, fontWeight: '700', color: '#1a202c' }}>📈 Projected Savings Growth</h2>
+            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 Projected Savings Growth</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="age" stroke="#718096" />
-                <YAxis stroke="#718096" />
-                <Tooltip formatter={value => formatINR(value)} contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                <Legend />
+                <XAxis dataKey="age" stroke="#4a5568" style={{ fontWeight: '600' }} />
+                <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
+                <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
+                <Legend wrapperStyle={{ fontWeight: '700' }} />
                 <Line type="monotone" dataKey="savings" stroke="#3182ce" strokeWidth={3} activeDot={{ r: 8 }} name="Savings" />
               </LineChart>
             </ResponsiveContainer>
@@ -453,19 +506,19 @@ export default function Home() {
 
           <div style={{ 
             background: '#ffffff',
-            padding: '30px',
+            padding: '32px',
             borderRadius: '16px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.05), 0 10px 15px rgba(0,0,0,0.03)',
-            border: '1px solid #e2e8f0'
+            boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
+            border: '2px solid #e2e8f0'
           }}>
-            <h2 style={{ fontSize: 20, marginTop: 0, marginBottom: 20, fontWeight: '700', color: '#1a202c' }}>📉 Post-Retirement Corpus</h2>
+            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', textTransform: 'uppercase', letterSpacing: '0.5px' }}>📉 Post-Retirement Corpus</h2>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="age" stroke="#718096" />
-                <YAxis stroke="#718096" />
-                <Tooltip formatter={value => formatINR(value)} contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px' }} />
-                <Legend />
+                <XAxis dataKey="age" stroke="#4a5568" style={{ fontWeight: '600' }} />
+                <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
+                <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
+                <Legend wrapperStyle={{ fontWeight: '700' }} />
                 <Line type="monotone" dataKey="remainingCorpus" stroke="#e53e3e" strokeWidth={3} activeDot={{ r: 8 }} name="Remaining Corpus" />
                 <Line type="monotone" dataKey="annualExpense" stroke="#dd6b20" strokeWidth={3} name="Annual Expense" />
               </LineChart>
