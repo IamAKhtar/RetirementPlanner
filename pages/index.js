@@ -120,7 +120,7 @@ function formatINR(value) {
 export default function Home() {
   const [inputs, setInputs] = useState(initialInputs);
   const [results, setResults] = useState(calculateRetirement(initialInputs));
-  const [showTable, setShowTable] = useState(false);
+  const [showTable, setShowTable] = useState(true);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -218,40 +218,6 @@ export default function Home() {
         </button>
       </section>
 
-      {/* Charts Section - Side by Side */}
-      <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 30 }}>
-        {/* Chart 1: Projected Savings Growth */}
-        <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: 18, marginTop: 0, marginBottom: 15 }}>Projected Savings Growth</h2>
-          <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={results.accumulation} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottomRight', offset: -5 }} />
-              <YAxis label={{ value: 'Savings', angle: -90, position: 'insideLeft' }} />
-              <Tooltip formatter={value => formatINR(value)} />
-              <Legend />
-              <Line type="monotone" dataKey="savings" stroke="#0070f3" strokeWidth={2} activeDot={{ r: 6 }} name="Savings" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Chart 2: Post-Retirement Corpus */}
-        <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: 18, marginTop: 0, marginBottom: 15 }}>Post-Retirement Corpus</h2>
-          <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={results.exhaustion} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottomRight', offset: -5 }} />
-              <YAxis label={{ value: 'Corpus', angle: -90, position: 'insideLeft' }} />
-              <Tooltip formatter={value => formatINR(value)} />
-              <Legend />
-              <Line type="monotone" dataKey="remainingCorpus" stroke="#d32f2f" strokeWidth={2} activeDot={{ r: 6 }} name="Remaining Corpus" />
-              <Line type="monotone" dataKey="annualExpense" stroke="#f57c00" strokeWidth={2} name="Annual Expense" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
-
       {/* Toggle Button for Table */}
       <div style={{ textAlign: 'center', marginBottom: 20 }}>
         <button 
@@ -271,49 +237,102 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Detailed Table */}
+      {/* Detailed Table with Fixed Header */}
       {showTable && (
-        <section style={{ marginTop: 20, overflowX: 'auto' }}>
+        <section style={{ marginBottom: 40 }}>
           <h2 style={{ marginBottom: 15 }}>Detailed Year-by-Year Breakdown</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, backgroundColor: 'white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#0070f3', color: 'white' }}>
-                <th style={{ padding: '12px 8px', textAlign: 'left', borderRight: '1px solid #fff' }}>Age</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff' }}>Starting Saving</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff' }}>Planned Expenses<br/>(post-tax)</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff' }}>Additional Expenses<br/>(post-tax)</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff' }}>Additional Savings</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff' }}>Ending Savings</th>
-                <th style={{ padding: '12px 8px', textAlign: 'center', borderRight: '1px solid #fff' }}>Status</th>
-                <th style={{ padding: '12px 8px', textAlign: 'center', borderRight: '1px solid #fff' }}>Warning</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right' }}>Monthly</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.yearlyData.map((row, idx) => {
-                const isRetired = row.status === 'Retired';
-                const isDead = row.status === 'Dead';
-                const bgColor = idx % 2 === 0 ? '#f9f9f9' : 'white';
-                const highlightColor = (idx % 5 === 0 && idx > 0) ? '#fffacd' : bgColor;
+          <div style={{ 
+            maxHeight: '600px', 
+            overflowY: 'auto', 
+            overflowX: 'auto',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}>
+            <table style={{ 
+              width: '100%', 
+              borderCollapse: 'collapse', 
+              fontSize: 13, 
+              backgroundColor: 'white'
+            }}>
+              <thead style={{ 
+                position: 'sticky', 
+                top: 0, 
+                zIndex: 10,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}>
+                <tr style={{ backgroundColor: '#0070f3', color: 'white' }}>
+                  <th style={{ padding: '12px 8px', textAlign: 'left', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Age</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Starting Saving</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Planned Expenses<br/>(post-tax)</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Additional Expenses<br/>(post-tax)</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Additional Savings</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'right', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Ending Savings</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'center', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Status</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'center', borderRight: '1px solid #fff', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Warning</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'right', position: 'sticky', top: 0, backgroundColor: '#0070f3' }}>Monthly</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.yearlyData.map((row, idx) => {
+                  const isRetired = row.status === 'Retired';
+                  const isDead = row.status === 'Dead';
+                  const bgColor = idx % 2 === 0 ? '#f9f9f9' : 'white';
+                  const highlightColor = (idx % 5 === 0 && idx > 0) ? '#fffacd' : bgColor;
 
-                return (
-                  <tr key={idx} style={{ backgroundColor: highlightColor }}>
-                    <td style={{ padding: '10px 8px', borderBottom: '1px solid #ddd', fontWeight: 'bold' }}>{row.age}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.startingSavings)}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.plannedExpenses)}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.additionalSavings)}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd', fontWeight: 'bold', color: isRetired ? '#d32f2f' : '#0070f3' }}>{formatINR(row.endingSavings)}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', borderBottom: '1px solid #ddd', fontWeight: 'bold', color: isDead ? '#d32f2f' : isRetired ? '#f57c00' : '#4caf50' }}>{row.status}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'center', borderBottom: '1px solid #ddd', color: '#d32f2f', fontWeight: 'bold' }}>{row.warning}</td>
-                    <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.monthly)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                  return (
+                    <tr key={idx} style={{ backgroundColor: highlightColor }}>
+                      <td style={{ padding: '10px 8px', borderBottom: '1px solid #ddd', fontWeight: 'bold' }}>{row.age}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.startingSavings)}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.plannedExpenses)}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.additionalSavings)}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd', fontWeight: 'bold', color: isRetired ? '#d32f2f' : '#0070f3' }}>{formatINR(row.endingSavings)}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'center', borderBottom: '1px solid #ddd', fontWeight: 'bold', color: isDead ? '#d32f2f' : isRetired ? '#f57c00' : '#4caf50' }}>{row.status}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'center', borderBottom: '1px solid #ddd', color: '#d32f2f', fontWeight: 'bold' }}>{row.warning}</td>
+                      <td style={{ padding: '10px 8px', textAlign: 'right', borderBottom: '1px solid #ddd' }}>{formatINR(row.monthly)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
+
+      {/* Charts Section - Vertical Stack */}
+      <section style={{ marginTop: 40 }}>
+        {/* Chart 1: Projected Savings Growth */}
+        <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: 30 }}>
+          <h2 style={{ fontSize: 18, marginTop: 0, marginBottom: 15 }}>Projected Savings Growth</h2>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottomRight', offset: -5 }} />
+              <YAxis label={{ value: 'Savings', angle: -90, position: 'insideLeft' }} />
+              <Tooltip formatter={value => formatINR(value)} />
+              <Legend />
+              <Line type="monotone" dataKey="savings" stroke="#0070f3" strokeWidth={2} activeDot={{ r: 6 }} name="Savings" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Chart 2: Post-Retirement Corpus */}
+        <div style={{ backgroundColor: 'white', padding: 20, borderRadius: 8, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+          <h2 style={{ fontSize: 18, marginTop: 0, marginBottom: 15 }}>Post-Retirement Corpus</h2>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="age" label={{ value: 'Age', position: 'insideBottomRight', offset: -5 }} />
+              <YAxis label={{ value: 'Corpus', angle: -90, position: 'insideLeft' }} />
+              <Tooltip formatter={value => formatINR(value)} />
+              <Legend />
+              <Line type="monotone" dataKey="remainingCorpus" stroke="#d32f2f" strokeWidth={2} activeDot={{ r: 6 }} name="Remaining Corpus" />
+              <Line type="monotone" dataKey="annualExpense" stroke="#f57c00" strokeWidth={2} name="Annual Expense" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </section>
     </main>
   );
 }
