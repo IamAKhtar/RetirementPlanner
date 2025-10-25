@@ -136,6 +136,13 @@ function formatINR(value) {
   }).format(value);
 }
 
+function formatIndianNumber(value) {
+  if (!value && value !== 0) return '';
+  return new Intl.NumberFormat('en-IN', {
+    maximumFractionDigits: 0
+  }).format(value);
+}
+
 function formatYAxis(value) {
   if (value >= 10000000) {
     return `${(value / 10000000).toFixed(1)}Cr`;
@@ -172,7 +179,8 @@ export default function Home() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setInputs(prev => ({ ...prev, [name]: parseFloat(value) }));
+    const numValue = parseFloat(value.replace(/,/g, '')) || 0;
+    setInputs(prev => ({ ...prev, [name]: numValue }));
   }
 
   function recalculate() {
@@ -409,11 +417,9 @@ export default function Home() {
               </span>
               <input 
                 style={inputStyle} 
-                type="number" 
+                type="text" 
                 name="currentSavings" 
-                value={inputs.currentSavings} 
-                min={0} 
-                step={100000} 
+                value={formatIndianNumber(inputs.currentSavings)}
                 onChange={handleChange} 
                 onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
@@ -433,11 +439,9 @@ export default function Home() {
               </span>
               <input 
                 style={inputStyle} 
-                type="number" 
+                type="text" 
                 name="monthlyInvestment" 
-                value={inputs.monthlyInvestment} 
-                min={0} 
-                step={1000} 
+                value={formatIndianNumber(inputs.monthlyInvestment)}
                 onChange={handleChange} 
                 onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
@@ -470,11 +474,9 @@ export default function Home() {
               </span>
               <input 
                 style={inputStyle} 
-                type="number" 
+                type="text" 
                 name="postRetirementMonthlyExpense" 
-                value={inputs.postRetirementMonthlyExpense} 
-                min={0} 
-                step={1000} 
+                value={formatIndianNumber(inputs.postRetirementMonthlyExpense)}
                 onChange={handleChange} 
                 onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
