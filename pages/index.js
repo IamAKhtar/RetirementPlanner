@@ -9,7 +9,7 @@ const initialInputs = {
   monthlyInvestment: 180000,
   stepUpRate: 0.1,
   postRetirementMonthlyExpense: 90000,
-  inflationRate: 0.06
+  inflationRate: 0.05  // Changed from 0.06 to 0.05 (5%)
 };
 
 function calculateRetirement(inputs) {
@@ -152,6 +152,7 @@ export default function Home() {
   const [inputs, setInputs] = useState(initialInputs);
   const [results, setResults] = useState(calculateRetirement(initialInputs));
   const [showTable, setShowTable] = useState(true);
+  const [showTooltip, setShowTooltip] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -183,7 +184,39 @@ export default function Home() {
     fontSize: '14px',
     fontWeight: '800',
     color: '#1a202c',
-    letterSpacing: '0.3px'
+    letterSpacing: '0.3px',
+    position: 'relative'
+  };
+
+  const tooltipStyle = {
+    position: 'absolute',
+    top: '-60px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    background: '#1a202c',
+    color: 'white',
+    padding: '8px 12px',
+    borderRadius: '8px',
+    fontSize: '12px',
+    fontWeight: '500',
+    whiteSpace: 'nowrap',
+    zIndex: 1000,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    maxWidth: '300px',
+    whiteSpace: 'normal',
+    textAlign: 'center'
+  };
+
+  const tooltipArrowStyle = {
+    position: 'absolute',
+    bottom: '-6px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 0,
+    height: 0,
+    borderLeft: '6px solid transparent',
+    borderRight: '6px solid transparent',
+    borderTop: '6px solid #1a202c'
   };
 
   return (
@@ -208,7 +241,7 @@ export default function Home() {
           gap: '15px'
         }}>
           <span style={{ fontSize: '44px' }}>⏰</span>
-          Retirement Planner
+          Retirement Calculator
         </h1>
 
         {/* Input Section */}
@@ -245,8 +278,8 @@ export default function Home() {
                 type="number" 
                 name="currentAge" 
                 value={inputs.currentAge} 
-                min={18} 
-                max={100} 
+                min={1} 
+                max={120} 
                 onChange={handleChange}
                 onFocus={(e) => {
                   e.target.style.borderColor = '#3182ce';
@@ -262,19 +295,67 @@ export default function Home() {
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🏖️</span> Retirement Age
               </span>
-              <input style={inputStyle} type="number" name="retirementAge" value={inputs.retirementAge} min={18} max={100} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="retirementAge" 
+                value={inputs.retirementAge} 
+                min={inputs.currentAge + 1} 
+                max={120} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
-            <label style={labelStyle}>
+            <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>🎯</span> Expenses Planned Until Age
+                <span style={{ fontSize: '18px' }}>🎯</span> Life Expectancy
+                <span 
+                  style={{ 
+                    cursor: 'help', 
+                    fontSize: '16px', 
+                    color: '#718096',
+                    marginLeft: '4px'
+                  }}
+                  onMouseEnter={() => setShowTooltip('lifeExpectancy')}
+                  onMouseLeave={() => setShowTooltip(null)}
+                >
+                  ℹ️
+                </span>
               </span>
-              <input style={inputStyle} type="number" name="expensesUntilAge" value={inputs.expensesUntilAge} min={inputs.retirementAge + 1} max={120} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              {showTooltip === 'lifeExpectancy' && (
+                <div style={tooltipStyle}>
+                  The age until which you want to plan your retirement expenses. Average life expectancy in India is 70-75 years.
+                  <div style={tooltipArrowStyle}></div>
+                </div>
+              )}
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="expensesUntilAge" 
+                value={inputs.expensesUntilAge} 
+                min={inputs.retirementAge + 1} 
+                max={120} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
             <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💰</span> Current Savings (₹)
               </span>
-              <input style={inputStyle} type="number" name="currentSavings" value={inputs.currentSavings} min={0} step={100000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="currentSavings" 
+                value={inputs.currentSavings} 
+                min={0} 
+                step={100000} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
           </div>
 
@@ -284,25 +365,103 @@ export default function Home() {
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💵</span> Monthly Investment (₹)
               </span>
-              <input style={inputStyle} type="number" name="monthlyInvestment" value={inputs.monthlyInvestment} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="monthlyInvestment" 
+                value={inputs.monthlyInvestment} 
+                min={0} 
+                step={1000} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
             <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>📈</span> Step-up Every Year (%)
+                <span style={{ fontSize: '18px' }}>📈</span> Annual Step-up (%)
               </span>
-              <input style={inputStyle} type="number" name="stepUpRate" value={inputs.stepUpRate * 100} min={0} max={50} step={0.1} onChange={e => setInputs(prev => ({ ...prev, stepUpRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="stepUpRate" 
+                value={inputs.stepUpRate * 100} 
+                min={0} 
+                max={50} 
+                step={0.1} 
+                onChange={e => setInputs(prev => ({ ...prev, stepUpRate: parseFloat(e.target.value) / 100 }))} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
-            <label style={labelStyle}>
+            <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>🏠</span> Post-Retirement Monthly Expense (₹)
+                <span style={{ fontSize: '18px' }}>🏠</span> Monthly Expense
+                <span 
+                  style={{ 
+                    cursor: 'help', 
+                    fontSize: '16px', 
+                    color: '#718096',
+                    marginLeft: '4px'
+                  }}
+                  onMouseEnter={() => setShowTooltip('monthlyExpense')}
+                  onMouseLeave={() => setShowTooltip(null)}
+                >
+                  ℹ️
+                </span>
               </span>
-              <input style={inputStyle} type="number" name="postRetirementMonthlyExpense" value={inputs.postRetirementMonthlyExpense} min={0} step={1000} onChange={handleChange} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              {showTooltip === 'monthlyExpense' && (
+                <div style={tooltipStyle}>
+                  Your estimated monthly living expenses after retirement in today's value.
+                  <div style={tooltipArrowStyle}></div>
+                </div>
+              )}
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="postRetirementMonthlyExpense" 
+                value={inputs.postRetirementMonthlyExpense} 
+                min={0} 
+                step={1000} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
-            <label style={labelStyle}>
+            <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>📊</span> Inflation Rate (%)
+                <span 
+                  style={{ 
+                    cursor: 'help', 
+                    fontSize: '16px', 
+                    color: '#718096',
+                    marginLeft: '4px'
+                  }}
+                  onMouseEnter={() => setShowTooltip('inflation')}
+                  onMouseLeave={() => setShowTooltip(null)}
+                >
+                  ℹ️
+                </span>
               </span>
-              <input style={inputStyle} type="number" name="inflationRate" value={inputs.inflationRate * 100} min={0} max={20} step={0.1} onChange={e => setInputs(prev => ({ ...prev, inflationRate: parseFloat(e.target.value) / 100 }))} onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} />
+              {showTooltip === 'inflation' && (
+                <div style={tooltipStyle}>
+                  Average annual inflation rate. In India, it typically ranges between 4-6%. Default is 5%.
+                  <div style={tooltipArrowStyle}></div>
+                </div>
+              )}
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="inflationRate" 
+                value={inputs.inflationRate * 100} 
+                min={0} 
+                max={100} 
+                step={0.1} 
+                onChange={e => setInputs(prev => ({ ...prev, inflationRate: parseFloat(e.target.value) / 100 }))} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
             </label>
           </div>
 
