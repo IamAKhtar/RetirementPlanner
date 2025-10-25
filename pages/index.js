@@ -154,11 +154,11 @@ function formatTooltipValue(value) {
 
 function formatCorpusDisplay(value) {
   if (value >= 10000000) {
-    return `₹${(value / 10000000).toFixed(2)} Cr`;
+    return `${(value / 10000000).toFixed(1)} Cr`;
   } else if (value >= 100000) {
-    return `₹${(value / 100000).toFixed(2)} L`;
+    return `${(value / 100000).toFixed(1)} L`;
   }
-  return `₹${formatINR(value)}`;
+  return formatINR(value);
 }
 
 export default function Home() {
@@ -175,16 +175,6 @@ export default function Home() {
 
   function recalculate() {
     setResults(calculateRetirement(inputs));
-  }
-
-  function toggleTooltip(tooltipId, e) {
-    e.stopPropagation();
-    setActiveTooltip(activeTooltip === tooltipId ? null : tooltipId);
-  }
-
-  function closeTooltip(e) {
-    e.stopPropagation();
-    setActiveTooltip(null);
   }
 
   const inputStyle = {
@@ -212,73 +202,94 @@ export default function Home() {
     position: 'relative'
   };
 
-  const tooltipStyle = {
-    position: 'absolute',
-    top: '-90px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    background: '#1a202c',
-    color: 'white',
-    padding: '14px 18px',
-    paddingRight: '38px',
-    borderRadius: '10px',
-    fontSize: '13px',
-    fontWeight: '500',
-    zIndex: 9999,
-    boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-    maxWidth: '320px',
-    minWidth: '280px',
-    whiteSpace: 'normal',
-    textAlign: 'left',
-    lineHeight: '1.6'
-  };
+  const InfoIcon = ({ tooltipId, tooltipText }) => {
+    const isActive = activeTooltip === tooltipId;
 
-  const tooltipArrowStyle = {
-    position: 'absolute',
-    bottom: '-8px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: 0,
-    height: 0,
-    borderLeft: '8px solid transparent',
-    borderRight: '8px solid transparent',
-    borderTop: '8px solid #1a202c'
+    return (
+      <div style={{ position: 'relative', display: 'inline-block' }}>
+        <span 
+          style={{ 
+            cursor: 'pointer', 
+            fontSize: '16px', 
+            color: isActive ? '#3182ce' : '#718096',
+            marginLeft: '6px',
+            transition: 'color 0.2s ease',
+            userSelect: 'none',
+            display: 'inline-block'
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveTooltip(isActive ? null : tooltipId);
+          }}
+        >
+          ℹ️
+        </span>
+        {isActive && (
+          <div 
+            style={{
+              position: 'fixed',
+              background: '#1a202c',
+              color: 'white',
+              padding: '14px 40px 14px 18px',
+              borderRadius: '10px',
+              fontSize: '13px',
+              fontWeight: '500',
+              zIndex: 10000,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+              maxWidth: '320px',
+              minWidth: '280px',
+              whiteSpace: 'normal',
+              textAlign: 'left',
+              lineHeight: '1.6',
+              transform: 'translate(-50%, -110%)',
+              left: '50%',
+              pointerEvents: 'auto'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: 'transparent',
+                border: 'none',
+                color: 'white',
+                fontSize: '20px',
+                cursor: 'pointer',
+                padding: '0',
+                width: '20px',
+                height: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                lineHeight: '1'
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveTooltip(null);
+              }}
+            >
+              ×
+            </button>
+            {tooltipText}
+            <div style={{
+              position: 'absolute',
+              bottom: '-8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '8px solid transparent',
+              borderRight: '8px solid transparent',
+              borderTop: '8px solid #1a202c'
+            }}></div>
+          </div>
+        )}
+      </div>
+    );
   };
-
-  const closeButtonStyle = {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    background: 'transparent',
-    border: 'none',
-    color: 'white',
-    fontSize: '20px',
-    cursor: 'pointer',
-    padding: '0',
-    width: '20px',
-    height: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    lineHeight: '1'
-  };
-
-  const InfoIcon = ({ tooltipId }) => (
-    <span 
-      style={{ 
-        cursor: 'pointer', 
-        fontSize: '16px', 
-        color: activeTooltip === tooltipId ? '#3182ce' : '#718096',
-        marginLeft: '6px',
-        transition: 'color 0.2s ease',
-        userSelect: 'none'
-      }}
-      onClick={(e) => toggleTooltip(tooltipId, e)}
-    >
-      ℹ️
-    </span>
-  );
 
   const faqs = [
     {
@@ -304,13 +315,14 @@ export default function Home() {
   ];
 
   return (
-    <main style={{ 
-      minHeight: '100vh',
-      background: 'linear-gradient(to bottom, #f7fafc 0%, #edf2f7 100%)',
-      padding: '40px 20px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-    }}
-    onClick={() => setActiveTooltip(null)}
+    <main 
+      style={{ 
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom, #f7fafc 0%, #edf2f7 100%)',
+        padding: '40px 20px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+      }}
+      onClick={() => setActiveTooltip(null)}
     >
       <div style={{ maxWidth: 1400, margin: 'auto' }}>
         {/* Header */}
@@ -393,18 +405,14 @@ export default function Home() {
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
               />
             </label>
-            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
+            <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🎯</span> Life Expectancy
-                <InfoIcon tooltipId="lifeExpectancy" />
+                <InfoIcon 
+                  tooltipId="lifeExpectancy" 
+                  tooltipText="The age until which you want to plan your retirement expenses. Average life expectancy in India is 70-75 years."
+                />
               </span>
-              {activeTooltip === 'lifeExpectancy' && (
-                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
-                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
-                  The age until which you want to plan your retirement expenses. Average life expectancy in India is 70-75 years.
-                  <div style={tooltipArrowStyle}></div>
-                </div>
-              )}
               <input 
                 style={inputStyle} 
                 type="number" 
@@ -437,18 +445,14 @@ export default function Home() {
 
           {/* Second Row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 25 }}>
-            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
+            <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💵</span> Monthly Investment (₹)
-                <InfoIcon tooltipId="monthlyInvestment" />
+                <InfoIcon 
+                  tooltipId="monthlyInvestment" 
+                  tooltipText="Total amount you invest every month towards retirement. Include all sources like SIP (Mutual Funds), EPF/PPF, NPS, recurring deposits, gold accumulation, etc."
+                />
               </span>
-              {activeTooltip === 'monthlyInvestment' && (
-                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
-                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
-                  Total amount you invest every month towards retirement. Include all sources like SIP (Mutual Funds), EPF/PPF, NPS, recurring deposits, gold accumulation, etc.
-                  <div style={tooltipArrowStyle}></div>
-                </div>
-              )}
               <input 
                 style={inputStyle} 
                 type="number" 
@@ -478,18 +482,14 @@ export default function Home() {
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
               />
             </label>
-            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
+            <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🏠</span> Monthly Expense
-                <InfoIcon tooltipId="monthlyExpense" />
+                <InfoIcon 
+                  tooltipId="monthlyExpense" 
+                  tooltipText="Your estimated monthly living expenses after retirement in today's value (will be adjusted for inflation automatically)."
+                />
               </span>
-              {activeTooltip === 'monthlyExpense' && (
-                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
-                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
-                  Your estimated monthly living expenses after retirement in today's value (will be adjusted for inflation automatically).
-                  <div style={tooltipArrowStyle}></div>
-                </div>
-              )}
               <input 
                 style={inputStyle} 
                 type="number" 
@@ -502,18 +502,14 @@ export default function Home() {
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
               />
             </label>
-            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
+            <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>📊</span> Inflation Rate (%)
-                <InfoIcon tooltipId="inflation" />
+                <InfoIcon 
+                  tooltipId="inflation" 
+                  tooltipText="Average annual inflation rate. In India, it typically ranges between 4-6%. Default is 5%."
+                />
               </span>
-              {activeTooltip === 'inflation' && (
-                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
-                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
-                  Average annual inflation rate. In India, it typically ranges between 4-6%. Default is 5%.
-                  <div style={tooltipArrowStyle}></div>
-                </div>
-              )}
               <input 
                 style={inputStyle} 
                 type="number" 
@@ -588,7 +584,13 @@ export default function Home() {
             lineHeight: '1.6'
           }}>
             {results.fundsLastUntilPlannedAge 
-              ? `Your savings will last until age ${results.expensesUntilAge} as planned. You'll have approximately ${formatCorpusDisplay(results.finalCorpus)} remaining. You're on track!`
+              ? (
+                <>
+                  Your savings will last until age {results.expensesUntilAge}. 
+                  <br />
+                  <strong>Remaining corpus: ₹{formatCorpusDisplay(results.finalCorpus)}</strong>
+                </>
+              )
               : `Your funds will run out at age ${results.moneyRunsOutAge}. You need to increase savings or reduce expenses to reach age ${results.expensesUntilAge}.`
             }
           </div>
