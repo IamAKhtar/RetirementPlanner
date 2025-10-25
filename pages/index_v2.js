@@ -206,7 +206,7 @@ export default function Home() {
     const isActive = activeTooltip === tooltipId;
 
     return (
-      <span style={{ position: 'relative', display: 'inline-block' }}>
+      <div style={{ position: 'relative', display: 'inline-block' }}>
         <span 
           style={{ 
             cursor: 'pointer', 
@@ -225,13 +225,9 @@ export default function Home() {
           ℹ️
         </span>
         {isActive && (
-          <span 
+          <div 
             style={{
-              position: 'absolute',
-              bottom: '100%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              marginBottom: '8px',
+              position: 'fixed',
               background: '#1a202c',
               color: 'white',
               padding: '14px 40px 14px 18px',
@@ -245,6 +241,8 @@ export default function Home() {
               whiteSpace: 'normal',
               textAlign: 'left',
               lineHeight: '1.6',
+              transform: 'translate(-50%, -110%)',
+              left: '50%',
               pointerEvents: 'auto'
             }}
             onClick={(e) => e.stopPropagation()}
@@ -276,9 +274,9 @@ export default function Home() {
               ×
             </button>
             {tooltipText}
-            <span style={{
+            <div style={{
               position: 'absolute',
-              top: '100%',
+              bottom: '-8px',
               left: '50%',
               transform: 'translateX(-50%)',
               width: 0,
@@ -286,10 +284,10 @@ export default function Home() {
               borderLeft: '8px solid transparent',
               borderRight: '8px solid transparent',
               borderTop: '8px solid #1a202c'
-            }}></span>
-          </span>
+            }}></div>
+          </div>
         )}
-      </span>
+      </div>
     );
   };
 
@@ -588,18 +586,12 @@ export default function Home() {
             {results.fundsLastUntilPlannedAge 
               ? (
                 <>
-                  Your savings will last until age {results.expensesUntilAge}.
+                  Your savings will last until age {results.expensesUntilAge}. 
                   <br />
-                  <strong style={{ fontSize: '18px' }}>Estimated Inheritance: ₹{formatCorpusDisplay(results.finalCorpus)}</strong>
+                  <strong>Remaining corpus: ₹{formatCorpusDisplay(results.finalCorpus)}</strong>
                 </>
               )
-              : (
-                <>
-                  Funds will run out at age {results.moneyRunsOutAge}.
-                  <br />
-                  <strong>Increase savings or reduce expenses to reach age {results.expensesUntilAge}.</strong>
-                </>
-              )
+              : `Your funds will run out at age ${results.moneyRunsOutAge}. You need to increase savings or reduce expenses to reach age ${results.expensesUntilAge}.`
             }
           </div>
         </section>
