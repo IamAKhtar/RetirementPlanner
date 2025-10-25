@@ -644,13 +644,14 @@ export default function Home() {
             border: '2px solid #e2e8f0'
           }}>
             <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📉 Post-Retirement Corpus</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 30 }}>
+            <ResponsiveContainer width="100%" height={420}>
+              <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 50 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis 
                   dataKey="age" 
                   stroke="#4a5568" 
                   style={{ fontWeight: '600' }}
+                  label={{ value: 'Age', position: 'bottom', offset: 10, style: { fontWeight: '700', fill: '#1a202c' } }}
                 />
                 <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
                 <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
@@ -675,13 +676,14 @@ export default function Home() {
             border: '2px solid #e2e8f0'
           }}>
             <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📈 Projected Savings Growth</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 30 }}>
+            <ResponsiveContainer width="100%" height={420}>
+              <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 50 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis 
                   dataKey="age" 
                   stroke="#4a5568" 
                   style={{ fontWeight: '600' }}
+                  label={{ value: 'Age', position: 'bottom', offset: 10, style: { fontWeight: '700', fill: '#1a202c' } }}
                 />
                 <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
                 <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
