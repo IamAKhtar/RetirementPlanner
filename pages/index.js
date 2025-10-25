@@ -9,7 +9,9 @@ const initialInputs = {
   monthlyInvestment: 180000,
   stepUpRate: 0.1,
   postRetirementMonthlyExpense: 90000,
-  inflationRate: 0.05
+  inflationRate: 0.05,
+  preRetirementReturn: 9.5,
+  postRetirementReturn: 8.5
 };
 
 function calculateRetirement(inputs) {
@@ -21,14 +23,16 @@ function calculateRetirement(inputs) {
     monthlyInvestment,
     stepUpRate,
     postRetirementMonthlyExpense,
-    inflationRate
+    inflationRate,
+    preRetirementReturn,
+    postRetirementReturn
   } = inputs;
   
   const yearsToWork = retirementAge - currentAge;
   const yearsAfterRetirement = expensesUntilAge - retirementAge;
 
-  const preRetirementReturn = 0.095;
-  const postRetirementReturn = 0.085;
+  const preReturnRate = preRetirementReturn / 100;
+  const postReturnRate = postRetirementReturn / 100;
 
   let savings = currentSavings;
   let investmentContribution = monthlyInvestment * 12;
@@ -46,14 +50,13 @@ function calculateRetirement(inputs) {
       investmentContribution = monthlyInvestment * 12 * stepUpFactor;
     }
     
-    savings = savings * (1 + preRetirementReturn) + investmentContribution;
+    savings = savings * (1 + preReturnRate) + investmentContribution;
     const endingSavings = savings;
     
     yearlyData.push({
       age,
       startingSavings: Math.round(startingSavings),
       plannedExpenses: 0,
-      additionalExpenses: 0,
       additionalSavings: Math.round(investmentContribution),
       endingSavings: Math.round(endingSavings),
       status: 'Earning',
@@ -76,7 +79,7 @@ function calculateRetirement(inputs) {
     annualExpense *= (1 + inflationRate);
     const monthlyExpense = Math.round(annualExpense / 12);
     
-    corpus = corpus * (1 + postRetirementReturn) - annualExpense;
+    corpus = corpus * (1 + postReturnRate) - annualExpense;
     
     let warning = '';
     if (corpus < annualExpense * 5 && corpus > 0) {
@@ -93,7 +96,6 @@ function calculateRetirement(inputs) {
       age,
       startingSavings: Math.round(startingCorpus),
       plannedExpenses: Math.round(annualExpense),
-      additionalExpenses: 0,
       additionalSavings: 0,
       endingSavings: Math.round(corpus > 0 ? corpus : 0),
       status,
@@ -270,8 +272,8 @@ export default function Home() {
       answer: "Annual Step-up is the percentage by which you increase your monthly investment each year. For example, if you invest ₹10,000/month with a 10% step-up, next year you'll invest ₹11,000/month. This accounts for salary increments and helps build a larger retirement corpus."
     },
     {
-      question: "What returns does this calculator assume?",
-      answer: "The calculator assumes 9.5% annual returns during your working years (pre-retirement) and 8.5% returns after retirement. These are conservative estimates based on historical equity and debt fund returns in India."
+      question: "What do Pre & Post Retirement Returns mean?",
+      answer: "Pre-Retirement Return is the expected annual return on your investments while you're working (typically 9.5% for balanced portfolios). Post-Retirement Return is the expected return after retirement (typically 8.5%, more conservative). You can adjust these based on your investment strategy."
     },
     {
       question: "Should I include EPF/PPF in Monthly Investment?",
@@ -501,6 +503,52 @@ export default function Home() {
             </label>
           </div>
 
+          {/* Third Row - Return Rates */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 25 }}>
+            <label style={labelStyle}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>📈</span> Pre-Retirement Return (%)
+                <InfoIcon 
+                  tooltipId="preReturnRate" 
+                  tooltipText="Expected annual return on your investments while working. Based on your investment strategy. Default: 9.5% (balanced portfolio)."
+                />
+              </span>
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="preRetirementReturn" 
+                value={inputs.preRetirementReturn} 
+                min={0} 
+                max={30} 
+                step={0.1} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
+            </label>
+            <label style={labelStyle}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '18px' }}>📉</span> Post-Retirement Return (%)
+                <InfoIcon 
+                  tooltipId="postReturnRate" 
+                  tooltipText="Expected annual return on your investments after retirement. Usually lower and more conservative. Default: 8.5%."
+                />
+              </span>
+              <input 
+                style={inputStyle} 
+                type="number" 
+                name="postRetirementReturn" 
+                value={inputs.postRetirementReturn} 
+                min={0} 
+                max={30} 
+                step={0.1} 
+                onChange={handleChange} 
+                onFocus={(e) => { e.target.style.borderColor = '#3182ce'; e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.15)'; }} 
+                onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
+              />
+            </label>
+          </div>
+
           {/* Calculate Button */}
           <button 
             onClick={recalculate}
@@ -708,13 +756,42 @@ export default function Home() {
                 }}>
                   <tr style={{ background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', color: 'white' }}>
                     <th style={{ padding: '16px 14px', textAlign: 'left', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Age</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Starting Saving</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Planned Expenses</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Additional Expenses</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Additional Savings</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Ending Savings</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>
+                      Opening Balance
+                      <InfoIcon 
+                        tooltipId="openingBalance" 
+                        tooltipText="Starting savings balance for this year"
+                      />
+                    </th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>
+                      Expenses
+                      <InfoIcon 
+                        tooltipId="expensesCol" 
+                        tooltipText="Annual living expenses (adjusted for inflation)"
+                      />
+                    </th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>
+                      Contribution
+                      <InfoIcon 
+                        tooltipId="contribution" 
+                        tooltipText="Amount added via new savings/investment"
+                      />
+                    </th>
+                    <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>
+                      Closing Balance
+                      <InfoIcon 
+                        tooltipId="closingBalance" 
+                        tooltipText="Final savings balance for this year"
+                      />
+                    </th>
                     <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Status</th>
-                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Warning</th>
+                    <th style={{ padding: '16px 14px', textAlign: 'center', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>
+                      Years Left
+                      <InfoIcon 
+                        tooltipId="yearsLeft" 
+                        tooltipText="Approx. years until funds run out"
+                      />
+                    </th>
                     <th style={{ padding: '16px 14px', textAlign: 'right', fontWeight: '800', fontSize: '13px', position: 'sticky', top: 0, background: 'linear-gradient(135deg, #3182ce 0%, #2c5282 100%)', letterSpacing: '0.5px' }}>Monthly</th>
                   </tr>
                 </thead>
@@ -733,7 +810,6 @@ export default function Home() {
                         <td style={{ padding: '13px 14px', borderBottom: '1px solid #e2e8f0', fontWeight: '800', color: '#1a202c', fontSize: '14px' }}>{row.age}</td>
                         <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.startingSavings)}</td>
                         <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.plannedExpenses)}</td>
-                        <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{row.additionalExpenses > 0 ? formatINR(row.additionalExpenses) : '-'}</td>
                         <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d3748', fontWeight: '600', fontSize: '14px' }}>{formatINR(row.additionalSavings)}</td>
                         <td style={{ padding: '13px 14px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', fontWeight: '800', color: isRetired ? '#e53e3e' : '#3182ce', fontSize: '14px' }}>{formatINR(row.endingSavings)}</td>
                         <td style={{ padding: '13px 14px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', fontWeight: '800', color: isDead ? '#e53e3e' : isRetired ? '#dd6b20' : '#38a169', fontSize: '14px' }}>{row.status}</td>
