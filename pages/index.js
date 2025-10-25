@@ -152,7 +152,7 @@ export default function Home() {
   const [inputs, setInputs] = useState(initialInputs);
   const [results, setResults] = useState(calculateRetirement(initialInputs));
   const [showTable, setShowTable] = useState(true);
-  const [showTooltip, setShowTooltip] = useState(null);
+  const [activeTooltip, setActiveTooltip] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -161,6 +161,14 @@ export default function Home() {
 
   function recalculate() {
     setResults(calculateRetirement(inputs));
+  }
+
+  function toggleTooltip(tooltipId) {
+    setActiveTooltip(activeTooltip === tooltipId ? null : tooltipId);
+  }
+
+  function closeTooltip() {
+    setActiveTooltip(null);
   }
 
   const inputStyle = {
@@ -190,34 +198,70 @@ export default function Home() {
 
   const tooltipStyle = {
     position: 'absolute',
-    top: '-60px',
+    top: '-80px',
     left: '50%',
     transform: 'translateX(-50%)',
     background: '#1a202c',
     color: 'white',
-    padding: '8px 12px',
-    borderRadius: '8px',
-    fontSize: '12px',
+    padding: '12px 16px',
+    paddingRight: '32px',
+    borderRadius: '10px',
+    fontSize: '13px',
     fontWeight: '500',
-    whiteSpace: 'nowrap',
     zIndex: 1000,
-    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-    maxWidth: '300px',
+    boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+    maxWidth: '320px',
+    minWidth: '280px',
     whiteSpace: 'normal',
-    textAlign: 'center'
+    textAlign: 'left',
+    lineHeight: '1.5'
   };
 
   const tooltipArrowStyle = {
     position: 'absolute',
-    bottom: '-6px',
+    bottom: '-8px',
     left: '50%',
     transform: 'translateX(-50%)',
     width: 0,
     height: 0,
-    borderLeft: '6px solid transparent',
-    borderRight: '6px solid transparent',
-    borderTop: '6px solid #1a202c'
+    borderLeft: '8px solid transparent',
+    borderRight: '8px solid transparent',
+    borderTop: '8px solid #1a202c'
   };
+
+  const closeButtonStyle = {
+    position: 'absolute',
+    top: '8px',
+    right: '8px',
+    background: 'transparent',
+    border: 'none',
+    color: 'white',
+    fontSize: '18px',
+    cursor: 'pointer',
+    padding: '0',
+    width: '20px',
+    height: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+    lineHeight: '1'
+  };
+
+  const InfoIcon = ({ tooltipId }) => (
+    <span 
+      style={{ 
+        cursor: 'pointer', 
+        fontSize: '16px', 
+        color: activeTooltip === tooltipId ? '#3182ce' : '#718096',
+        marginLeft: '4px',
+        transition: 'color 0.2s ease'
+      }}
+      onClick={() => toggleTooltip(tooltipId)}
+    >
+      ℹ️
+    </span>
+  );
 
   return (
     <main style={{ 
@@ -310,21 +354,11 @@ export default function Home() {
             <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🎯</span> Life Expectancy
-                <span 
-                  style={{ 
-                    cursor: 'help', 
-                    fontSize: '16px', 
-                    color: '#718096',
-                    marginLeft: '4px'
-                  }}
-                  onMouseEnter={() => setShowTooltip('lifeExpectancy')}
-                  onMouseLeave={() => setShowTooltip(null)}
-                >
-                  ℹ️
-                </span>
+                <InfoIcon tooltipId="lifeExpectancy" />
               </span>
-              {showTooltip === 'lifeExpectancy' && (
+              {activeTooltip === 'lifeExpectancy' && (
                 <div style={tooltipStyle}>
+                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
                   The age until which you want to plan your retirement expenses. Average life expectancy in India is 70-75 years.
                   <div style={tooltipArrowStyle}></div>
                 </div>
@@ -361,10 +395,18 @@ export default function Home() {
 
           {/* Second Row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 25 }}>
-            <label style={labelStyle}>
+            <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💵</span> Monthly Investment (₹)
+                <InfoIcon tooltipId="monthlyInvestment" />
               </span>
+              {activeTooltip === 'monthlyInvestment' && (
+                <div style={tooltipStyle}>
+                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
+                  Total amount you invest every month towards retirement. Include all sources like SIP (Mutual Funds), EPF/PPF, NPS, recurring deposits, gold accumulation, etc.
+                  <div style={tooltipArrowStyle}></div>
+                </div>
+              )}
               <input 
                 style={inputStyle} 
                 type="number" 
@@ -397,22 +439,12 @@ export default function Home() {
             <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🏠</span> Monthly Expense
-                <span 
-                  style={{ 
-                    cursor: 'help', 
-                    fontSize: '16px', 
-                    color: '#718096',
-                    marginLeft: '4px'
-                  }}
-                  onMouseEnter={() => setShowTooltip('monthlyExpense')}
-                  onMouseLeave={() => setShowTooltip(null)}
-                >
-                  ℹ️
-                </span>
+                <InfoIcon tooltipId="monthlyExpense" />
               </span>
-              {showTooltip === 'monthlyExpense' && (
+              {activeTooltip === 'monthlyExpense' && (
                 <div style={tooltipStyle}>
-                  Your estimated monthly living expenses after retirement in today's value.
+                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
+                  Your estimated monthly living expenses after retirement in today's value (will be adjusted for inflation automatically).
                   <div style={tooltipArrowStyle}></div>
                 </div>
               )}
@@ -431,21 +463,11 @@ export default function Home() {
             <label style={{...labelStyle, position: 'relative'}}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>📊</span> Inflation Rate (%)
-                <span 
-                  style={{ 
-                    cursor: 'help', 
-                    fontSize: '16px', 
-                    color: '#718096',
-                    marginLeft: '4px'
-                  }}
-                  onMouseEnter={() => setShowTooltip('inflation')}
-                  onMouseLeave={() => setShowTooltip(null)}
-                >
-                  ℹ️
-                </span>
+                <InfoIcon tooltipId="inflation" />
               </span>
-              {showTooltip === 'inflation' && (
+              {activeTooltip === 'inflation' && (
                 <div style={tooltipStyle}>
+                  <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
                   Average annual inflation rate. In India, it typically ranges between 4-6%. Default is 5%.
                   <div style={tooltipArrowStyle}></div>
                 </div>
