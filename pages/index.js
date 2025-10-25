@@ -9,7 +9,7 @@ const initialInputs = {
   monthlyInvestment: 180000,
   stepUpRate: 0.1,
   postRetirementMonthlyExpense: 90000,
-  inflationRate: 0.05  // Changed from 0.06 to 0.05 (5%)
+  inflationRate: 0.05
 };
 
 function calculateRetirement(inputs) {
@@ -68,6 +68,7 @@ function calculateRetirement(inputs) {
   let annualExpense = postRetirementMonthlyExpense * 12;
   let expenseData = [];
   let moneyRunsOutAge = null;
+  let finalCorpus = 0;
 
   for (let i = 1; i <= yearsAfterRetirement; i++) {
     const age = retirementAge + i;
@@ -106,6 +107,10 @@ function calculateRetirement(inputs) {
       annualExpense: Math.round(annualExpense) 
     });
 
+    if (corpus > 0) {
+      finalCorpus = corpus;
+    }
+
     if (corpus <= 0) break;
   }
 
@@ -117,7 +122,8 @@ function calculateRetirement(inputs) {
     yearlyData,
     fundsLastUntilPlannedAge,
     moneyRunsOutAge,
-    expensesUntilAge
+    expensesUntilAge,
+    finalCorpus: Math.round(finalCorpus)
   };
 }
 
@@ -128,7 +134,6 @@ function formatINR(value) {
   }).format(value);
 }
 
-// Format currency for Y-axis in Lakhs and Crores
 function formatYAxis(value) {
   if (value >= 10000000) {
     return `${(value / 10000000).toFixed(1)}Cr`;
@@ -138,8 +143,16 @@ function formatYAxis(value) {
   return value.toString();
 }
 
-// Format tooltip values
 function formatTooltipValue(value) {
+  if (value >= 10000000) {
+    return `₹${(value / 10000000).toFixed(2)} Cr`;
+  } else if (value >= 100000) {
+    return `₹${(value / 100000).toFixed(2)} L`;
+  }
+  return `₹${formatINR(value)}`;
+}
+
+function formatCorpusDisplay(value) {
   if (value >= 10000000) {
     return `₹${(value / 10000000).toFixed(2)} Cr`;
   } else if (value >= 100000) {
@@ -153,6 +166,7 @@ export default function Home() {
   const [results, setResults] = useState(calculateRetirement(initialInputs));
   const [showTable, setShowTable] = useState(true);
   const [activeTooltip, setActiveTooltip] = useState(null);
+  const [expandedFaq, setExpandedFaq] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -163,11 +177,13 @@ export default function Home() {
     setResults(calculateRetirement(inputs));
   }
 
-  function toggleTooltip(tooltipId) {
+  function toggleTooltip(tooltipId, e) {
+    e.stopPropagation();
     setActiveTooltip(activeTooltip === tooltipId ? null : tooltipId);
   }
 
-  function closeTooltip() {
+  function closeTooltip(e) {
+    e.stopPropagation();
     setActiveTooltip(null);
   }
 
@@ -198,23 +214,23 @@ export default function Home() {
 
   const tooltipStyle = {
     position: 'absolute',
-    top: '-80px',
+    top: '-90px',
     left: '50%',
     transform: 'translateX(-50%)',
     background: '#1a202c',
     color: 'white',
-    padding: '12px 16px',
-    paddingRight: '32px',
+    padding: '14px 18px',
+    paddingRight: '38px',
     borderRadius: '10px',
     fontSize: '13px',
     fontWeight: '500',
-    zIndex: 1000,
-    boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
+    zIndex: 9999,
+    boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
     maxWidth: '320px',
     minWidth: '280px',
     whiteSpace: 'normal',
     textAlign: 'left',
-    lineHeight: '1.5'
+    lineHeight: '1.6'
   };
 
   const tooltipArrowStyle = {
@@ -231,12 +247,12 @@ export default function Home() {
 
   const closeButtonStyle = {
     position: 'absolute',
-    top: '8px',
-    right: '8px',
+    top: '10px',
+    right: '10px',
     background: 'transparent',
     border: 'none',
     color: 'white',
-    fontSize: '18px',
+    fontSize: '20px',
     cursor: 'pointer',
     padding: '0',
     width: '20px',
@@ -254,14 +270,38 @@ export default function Home() {
         cursor: 'pointer', 
         fontSize: '16px', 
         color: activeTooltip === tooltipId ? '#3182ce' : '#718096',
-        marginLeft: '4px',
-        transition: 'color 0.2s ease'
+        marginLeft: '6px',
+        transition: 'color 0.2s ease',
+        userSelect: 'none'
       }}
-      onClick={() => toggleTooltip(tooltipId)}
+      onClick={(e) => toggleTooltip(tooltipId, e)}
     >
       ℹ️
     </span>
   );
+
+  const faqs = [
+    {
+      question: "What is the Annual Step-up percentage?",
+      answer: "Annual Step-up is the percentage by which you increase your monthly investment each year. For example, if you invest ₹10,000/month with a 10% step-up, next year you'll invest ₹11,000/month. This accounts for salary increments and helps build a larger retirement corpus."
+    },
+    {
+      question: "What returns does this calculator assume?",
+      answer: "The calculator assumes 9.5% annual returns during your working years (pre-retirement) and 8.5% returns after retirement. These are conservative estimates based on historical equity and debt fund returns in India."
+    },
+    {
+      question: "Should I include EPF/PPF in Monthly Investment?",
+      answer: "Yes! Include all retirement savings: EPF/PPF contributions, SIPs, NPS, recurring deposits, and any other regular investments. This gives you a complete picture of your retirement readiness."
+    },
+    {
+      question: "How accurate is the inflation rate of 5%?",
+      answer: "India's inflation has averaged 4-6% over the past decade. The default 5% is a reasonable middle estimate. You can adjust this based on your expectations. Higher inflation means you'll need more savings for the same lifestyle."
+    },
+    {
+      question: "What if my money runs out before my planned age?",
+      answer: "If the calculator shows insufficient funds, you have three options: (1) Increase your monthly investments, (2) Reduce your expected monthly expenses after retirement, or (3) Plan to retire later. Small adjustments now can make a big difference!"
+    }
+  ];
 
   return (
     <main style={{ 
@@ -269,9 +309,11 @@ export default function Home() {
       background: 'linear-gradient(to bottom, #f7fafc 0%, #edf2f7 100%)',
       padding: '40px 20px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-    }}>
+    }}
+    onClick={() => setActiveTooltip(null)}
+    >
       <div style={{ maxWidth: 1400, margin: 'auto' }}>
-        {/* Header with Clock Icon */}
+        {/* Header */}
         <h1 style={{ 
           textAlign: 'center', 
           fontSize: '44px',
@@ -351,13 +393,13 @@ export default function Home() {
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
               />
             </label>
-            <label style={{...labelStyle, position: 'relative'}}>
+            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🎯</span> Life Expectancy
                 <InfoIcon tooltipId="lifeExpectancy" />
               </span>
               {activeTooltip === 'lifeExpectancy' && (
-                <div style={tooltipStyle}>
+                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
                   <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
                   The age until which you want to plan your retirement expenses. Average life expectancy in India is 70-75 years.
                   <div style={tooltipArrowStyle}></div>
@@ -395,13 +437,13 @@ export default function Home() {
 
           {/* Second Row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 25 }}>
-            <label style={{...labelStyle, position: 'relative'}}>
+            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💵</span> Monthly Investment (₹)
                 <InfoIcon tooltipId="monthlyInvestment" />
               </span>
               {activeTooltip === 'monthlyInvestment' && (
-                <div style={tooltipStyle}>
+                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
                   <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
                   Total amount you invest every month towards retirement. Include all sources like SIP (Mutual Funds), EPF/PPF, NPS, recurring deposits, gold accumulation, etc.
                   <div style={tooltipArrowStyle}></div>
@@ -436,13 +478,13 @@ export default function Home() {
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
               />
             </label>
-            <label style={{...labelStyle, position: 'relative'}}>
+            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>🏠</span> Monthly Expense
                 <InfoIcon tooltipId="monthlyExpense" />
               </span>
               {activeTooltip === 'monthlyExpense' && (
-                <div style={tooltipStyle}>
+                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
                   <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
                   Your estimated monthly living expenses after retirement in today's value (will be adjusted for inflation automatically).
                   <div style={tooltipArrowStyle}></div>
@@ -460,13 +502,13 @@ export default function Home() {
                 onBlur={(e) => { e.target.style.borderColor = '#cbd5e0'; e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.08)'; }} 
               />
             </label>
-            <label style={{...labelStyle, position: 'relative'}}>
+            <label style={{...labelStyle, position: 'relative'}} onClick={(e) => e.stopPropagation()}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>📊</span> Inflation Rate (%)
                 <InfoIcon tooltipId="inflation" />
               </span>
               {activeTooltip === 'inflation' && (
-                <div style={tooltipStyle}>
+                <div style={tooltipStyle} onClick={(e) => e.stopPropagation()}>
                   <button style={closeButtonStyle} onClick={closeTooltip}>×</button>
                   Average annual inflation rate. In India, it typically ranges between 4-6%. Default is 5%.
                   <div style={tooltipArrowStyle}></div>
@@ -546,9 +588,75 @@ export default function Home() {
             lineHeight: '1.6'
           }}>
             {results.fundsLastUntilPlannedAge 
-              ? `Your savings will last until age ${results.expensesUntilAge} as planned. You're on track!`
+              ? `Your savings will last until age ${results.expensesUntilAge} as planned. You'll have approximately ${formatCorpusDisplay(results.finalCorpus)} remaining. You're on track!`
               : `Your funds will run out at age ${results.moneyRunsOutAge}. You need to increase savings or reduce expenses to reach age ${results.expensesUntilAge}.`
             }
+          </div>
+        </section>
+
+        {/* Charts Section - Reordered */}
+        <section style={{ marginBottom: 40 }}>
+          {/* Post-Retirement Corpus Chart FIRST */}
+          <div style={{ 
+            background: '#ffffff',
+            padding: '32px',
+            borderRadius: '16px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
+            marginBottom: 30,
+            border: '2px solid #e2e8f0'
+          }}>
+            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📉 Post-Retirement Corpus</h2>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis 
+                  dataKey="age" 
+                  stroke="#4a5568" 
+                  style={{ fontWeight: '600' }} 
+                  label={{ value: 'Age', position: 'insideBottom', offset: -5, style: { fontWeight: '700', fill: '#1a202c' } }}
+                />
+                <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
+                <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
+                <Legend 
+                  verticalAlign="top" 
+                  height={36}
+                  wrapperStyle={{ fontWeight: '700', paddingBottom: '20px' }} 
+                />
+                <Line type="monotone" dataKey="remainingCorpus" stroke="#e53e3e" strokeWidth={3} activeDot={{ r: 8 }} name="Remaining Corpus" />
+                <Line type="monotone" dataKey="annualExpense" stroke="#dd6b20" strokeWidth={3} name="Annual Expense" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Projected Savings Growth Chart SECOND */}
+          <div style={{ 
+            background: '#ffffff',
+            padding: '32px',
+            borderRadius: '16px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
+            marginBottom: 30,
+            border: '2px solid #e2e8f0'
+          }}>
+            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📈 Projected Savings Growth</h2>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis 
+                  dataKey="age" 
+                  stroke="#4a5568" 
+                  style={{ fontWeight: '600' }} 
+                  label={{ value: 'Age', position: 'insideBottom', offset: -5, style: { fontWeight: '700', fill: '#1a202c' } }}
+                />
+                <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
+                <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
+                <Legend 
+                  verticalAlign="top" 
+                  height={36}
+                  wrapperStyle={{ fontWeight: '700', paddingBottom: '20px' }} 
+                />
+                <Line type="monotone" dataKey="savings" stroke="#3182ce" strokeWidth={3} activeDot={{ r: 8 }} name="Savings" />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </section>
 
@@ -656,49 +764,79 @@ export default function Home() {
           </section>
         )}
 
-        {/* Charts */}
-        <section style={{ marginTop: 40 }}>
-          <div style={{ 
-            background: '#ffffff',
-            padding: '32px',
-            borderRadius: '16px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
-            marginBottom: 30,
-            border: '2px solid #e2e8f0'
+        {/* FAQ Section */}
+        <section style={{ 
+          background: '#ffffff',
+          padding: '35px',
+          borderRadius: '16px',
+          marginTop: '40px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
+          border: '2px solid #e2e8f0'
+        }}>
+          <h2 style={{ 
+            marginTop: 0, 
+            marginBottom: 28, 
+            fontSize: 26,
+            fontWeight: '900',
+            color: '#1a202c',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            letterSpacing: '0.5px'
           }}>
-            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📈 Projected Savings Growth</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={results.accumulation} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="age" stroke="#4a5568" style={{ fontWeight: '600' }} />
-                <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
-                <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
-                <Legend wrapperStyle={{ fontWeight: '700' }} />
-                <Line type="monotone" dataKey="savings" stroke="#3182ce" strokeWidth={3} activeDot={{ r: 8 }} name="Savings" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+            <span style={{ fontSize: '28px' }}>❓</span> Frequently Asked Questions
+          </h2>
 
-          <div style={{ 
-            background: '#ffffff',
-            padding: '32px',
-            borderRadius: '16px',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.07), 0 10px 15px rgba(0,0,0,0.05)',
-            border: '2px solid #e2e8f0'
-          }}>
-            <h2 style={{ fontSize: 22, marginTop: 0, marginBottom: 22, fontWeight: '900', color: '#1a202c', letterSpacing: '0.5px' }}>📉 Post-Retirement Corpus</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={results.exhaustion} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="age" stroke="#4a5568" style={{ fontWeight: '600' }} />
-                <YAxis tickFormatter={formatYAxis} stroke="#4a5568" style={{ fontWeight: '600' }} />
-                <Tooltip formatter={formatTooltipValue} contentStyle={{ background: '#ffffff', border: '2px solid #e2e8f0', borderRadius: '8px', fontWeight: '700' }} />
-                <Legend wrapperStyle={{ fontWeight: '700' }} />
-                <Line type="monotone" dataKey="remainingCorpus" stroke="#e53e3e" strokeWidth={3} activeDot={{ r: 8 }} name="Remaining Corpus" />
-                <Line type="monotone" dataKey="annualExpense" stroke="#dd6b20" strokeWidth={3} name="Annual Expense" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          {faqs.map((faq, idx) => (
+            <div 
+              key={idx}
+              style={{
+                borderBottom: idx < faqs.length - 1 ? '1px solid #e2e8f0' : 'none',
+                paddingBottom: '20px',
+                marginBottom: '20px'
+              }}
+            >
+              <div 
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  padding: '12px 0'
+                }}
+                onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
+              >
+                <h3 style={{
+                  margin: 0,
+                  fontSize: '16px',
+                  fontWeight: '700',
+                  color: '#1a202c',
+                  flex: 1
+                }}>
+                  {faq.question}
+                </h3>
+                <span style={{
+                  fontSize: '24px',
+                  color: '#3182ce',
+                  marginLeft: '16px',
+                  transition: 'transform 0.3s ease',
+                  transform: expandedFaq === idx ? 'rotate(180deg)' : 'rotate(0deg)'
+                }}>
+                  ▼
+                </span>
+              </div>
+              {expandedFaq === idx && (
+                <div style={{
+                  padding: '16px 0',
+                  fontSize: '15px',
+                  lineHeight: '1.7',
+                  color: '#4a5568'
+                }}>
+                  {faq.answer}
+                </div>
+              )}
+            </div>
+          ))}
         </section>
       </div>
     </main>
