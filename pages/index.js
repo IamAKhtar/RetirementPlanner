@@ -591,7 +591,7 @@ export default function Home() {
                   <strong>Estimated Inheritance: ₹{formatCorpusDisplay(results.finalCorpus)}</strong>
                 </>
               )
-              : `Your funds will run out at age ${results.moneyRunsOutAge}. You need to increase savings or reduce expenses to reach age ${results.expensesUntilAge}.`
+              : `Your funds will run out at age ${results.moneyRunsOutAge}.` <br /> `You need to increase savings or reduce expenses to reach age ${results.expensesUntilAge}.`
             }
           </div>
         </section>
