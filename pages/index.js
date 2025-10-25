@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -297,22 +298,35 @@ export default function Home() {
       }}
     >
       <div style={{ maxWidth: 1400, margin: 'auto' }}>
-        {/* Header */}
-        <h1 style={{ 
+        {/* Header with Custom Logo */}
+        <div style={{ 
           textAlign: 'center', 
-          fontSize: '44px',
-          fontWeight: '900',
-          color: '#1a202c',
           marginBottom: '40px',
-          letterSpacing: '-1px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '15px'
+          gap: '20px',
+          flexWrap: 'wrap'
         }}>
-          <span style={{ fontSize: '44px' }}>⏰</span>
-          Retirement Calculator
-        </h1>
+          <div style={{ position: 'relative', width: '80px', height: '80px' }}>
+            <Image
+              src="/logo.png"
+              alt="Retirement Calculator Logo"
+              fill
+              style={{ objectFit: 'contain' }}
+              priority
+            />
+          </div>
+          <h1 style={{ 
+            fontSize: '44px',
+            fontWeight: '900',
+            color: '#1a202c',
+            margin: 0,
+            letterSpacing: '-1px'
+          }}>
+            Retirement Calculator
+          </h1>
+        </div>
         
         {/* Input Section */}
         <section style={{ 
