@@ -23,7 +23,7 @@ function calculateRetirement(inputs) {
     postRetirementMonthlyExpense,
     inflationRate
   } = inputs;
-
+  
   const yearsToWork = retirementAge - currentAge;
   const yearsAfterRetirement = expensesUntilAge - retirementAge;
 
@@ -40,15 +40,15 @@ function calculateRetirement(inputs) {
   for (let i = 0; i <= yearsToWork; i++) {
     const age = currentAge + i;
     const startingSavings = savings;
-
+    
     if (i > 0) {
       stepUpFactor *= (1 + stepUpRate);
       investmentContribution = monthlyInvestment * 12 * stepUpFactor;
     }
-
+    
     savings = savings * (1 + preRetirementReturn) + investmentContribution;
     const endingSavings = savings;
-
+    
     yearlyData.push({
       age,
       startingSavings: Math.round(startingSavings),
@@ -60,7 +60,7 @@ function calculateRetirement(inputs) {
       warning: '',
       monthly: 0
     });
-
+    
     chartData.push({ age, savings: Math.round(savings) });
   }
 
@@ -69,26 +69,26 @@ function calculateRetirement(inputs) {
   let expenseData = [];
   let moneyRunsOutAge = null;
   let finalCorpus = 0;
-
+  
   for (let i = 1; i <= yearsAfterRetirement; i++) {
     const age = retirementAge + i;
     const startingCorpus = corpus;
     annualExpense *= (1 + inflationRate);
     const monthlyExpense = Math.round(annualExpense / 12);
-
+    
     corpus = corpus * (1 + postRetirementReturn) - annualExpense;
-
+    
     let warning = '';
     if (corpus < annualExpense * 5 && corpus > 0) {
       warning = Math.round(corpus / annualExpense).toFixed(1);
     }
-
+    
     const status = corpus <= 0 ? 'Dead' : 'Retired';
-
+    
     if (corpus <= 0 && moneyRunsOutAge === null) {
       moneyRunsOutAge = age;
     }
-
+    
     yearlyData.push({
       age,
       startingSavings: Math.round(startingCorpus),
@@ -100,22 +100,22 @@ function calculateRetirement(inputs) {
       warning,
       monthly: monthlyExpense
     });
-
+    
     expenseData.push({ 
       age, 
       remainingCorpus: Math.round(corpus > 0 ? corpus : 0), 
       annualExpense: Math.round(annualExpense) 
     });
-
+    
     if (corpus > 0) {
       finalCorpus = corpus;
     }
-
+    
     if (corpus <= 0) break;
   }
 
   const fundsLastUntilPlannedAge = moneyRunsOutAge === null || moneyRunsOutAge >= expensesUntilAge;
-
+  
   return { 
     accumulation: chartData, 
     exhaustion: expenseData, 
@@ -204,22 +204,21 @@ export default function Home() {
 
   const InfoIcon = ({ tooltipId, tooltipText }) => {
     const isActive = activeTooltip === tooltipId;
-
+    
     return (
-      <span style={{ position: 'relative', display: 'inline-block' }}>
+      <span 
+        style={{ position: 'relative', display: 'inline-block', marginLeft: '6px' }}
+        onMouseEnter={() => setActiveTooltip(tooltipId)}
+        onMouseLeave={() => setActiveTooltip(null)}
+      >
         <span 
           style={{ 
-            cursor: 'pointer', 
+            cursor: 'help', 
             fontSize: '16px', 
             color: isActive ? '#3182ce' : '#718096',
-            marginLeft: '6px',
             transition: 'color 0.2s ease',
             userSelect: 'none',
             display: 'inline-block'
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            setActiveTooltip(isActive ? null : tooltipId);
           }}
         >
           ℹ️
@@ -231,50 +230,22 @@ export default function Home() {
               bottom: '100%',
               left: '50%',
               transform: 'translateX(-50%)',
-              marginBottom: '8px',
+              marginBottom: '10px',
               background: '#1a202c',
               color: 'white',
-              padding: '14px 40px 14px 18px',
-              borderRadius: '10px',
+              padding: '12px 16px',
+              borderRadius: '8px',
               fontSize: '13px',
               fontWeight: '500',
               zIndex: 10000,
               boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-              maxWidth: '320px',
-              minWidth: '280px',
+              width: '280px',
               whiteSpace: 'normal',
               textAlign: 'left',
               lineHeight: '1.6',
-              pointerEvents: 'auto'
+              pointerEvents: 'none'
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <button 
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                background: 'transparent',
-                border: 'none',
-                color: 'white',
-                fontSize: '20px',
-                cursor: 'pointer',
-                padding: '0',
-                width: '20px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold',
-                lineHeight: '1'
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveTooltip(null);
-              }}
-            >
-              ×
-            </button>
             {tooltipText}
             <span style={{
               position: 'absolute',
@@ -324,7 +295,6 @@ export default function Home() {
         padding: '40px 20px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
       }}
-      onClick={() => setActiveTooltip(null)}
     >
       <div style={{ maxWidth: 1400, margin: 'auto' }}>
         {/* Header */}
@@ -343,7 +313,7 @@ export default function Home() {
           <span style={{ fontSize: '44px' }}>⏰</span>
           Retirement Calculator
         </h1>
-
+        
         {/* Input Section */}
         <section style={{ 
           background: '#ffffff',
@@ -366,7 +336,7 @@ export default function Home() {
           }}>
             <span style={{ fontSize: '28px' }}>💼</span> Your Inputs
           </h2>
-
+          
           {/* First Row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 20, marginBottom: 20 }}>
             <label style={labelStyle}>
@@ -430,6 +400,10 @@ export default function Home() {
             <label style={labelStyle}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '18px' }}>💰</span> Current Savings (₹)
+                <InfoIcon 
+                  tooltipId="currentSavings" 
+                  tooltipText="Total value of all your current savings and investments including EPF, PPF, Mutual Funds, Fixed Deposits, Stocks, Gold, and any other assets."
+                />
               </span>
               <input 
                 style={inputStyle} 
@@ -604,9 +578,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Charts Section - Reordered */}
+        {/* Charts Section */}
         <section style={{ marginBottom: 40 }}>
-          {/* Post-Retirement Corpus Chart FIRST */}
+          {/* Post-Retirement Corpus Chart */}
           <div style={{ 
             background: '#ffffff',
             padding: '32px',
@@ -638,7 +612,7 @@ export default function Home() {
             </ResponsiveContainer>
           </div>
 
-          {/* Projected Savings Growth Chart SECOND */}
+          {/* Projected Savings Growth Chart */}
           <div style={{ 
             background: '#ffffff',
             padding: '32px',
@@ -750,7 +724,7 @@ export default function Home() {
                     const isDead = row.status === 'Dead';
                     const bgColor = idx % 2 === 0 ? '#ffffff' : '#f7fafc';
                     const highlightColor = (idx % 5 === 0 && idx > 0) ? '#fffbeb' : bgColor;
-
+                    
                     return (
                       <tr key={idx} style={{ backgroundColor: highlightColor, transition: 'background-color 0.2s ease' }}
                         onMouseOver={e => e.currentTarget.style.backgroundColor = '#edf2f7'}
@@ -796,7 +770,7 @@ export default function Home() {
           }}>
             <span style={{ fontSize: '28px' }}>❓</span> Frequently Asked Questions
           </h2>
-
+          
           {faqs.map((faq, idx) => (
             <div 
               key={idx}
